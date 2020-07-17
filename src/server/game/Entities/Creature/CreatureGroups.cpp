@@ -308,3 +308,8 @@ bool CreatureGroup::CanLeaderStartMoving() const
 
     return true;
 }
+
+bool CreatureGroup::HasAliveMembers() const
+{
+    return std::ranges::any_of(_members, [](Creature const* member) { return member->IsAlive(); }, &MembersMap::value_type::first);
+}

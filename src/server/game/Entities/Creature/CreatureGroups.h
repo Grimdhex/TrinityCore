@@ -69,8 +69,10 @@ class TC_GAME_API FormationMgr
 class TC_GAME_API CreatureGroup
 {
     private:
-        Creature* _leader; //Important do not forget sometimes to work with pointers instead synonims :D:D
-        std::unordered_map<Creature*, FormationInfo*> _members;
+        Creature* _leader;
+
+        using MembersMap = std::unordered_map<Creature*, FormationInfo*>;
+        MembersMap _members;
 
         ObjectGuid::LowType _leaderSpawnId;
         bool _formed;
@@ -95,6 +97,8 @@ class TC_GAME_API CreatureGroup
         void LeaderStartedMoving();
         void MemberEngagingTarget(Creature* member, Unit* target);
         bool CanLeaderStartMoving() const;
+
+        bool HasAliveMembers() const;
 };
 
 #define sFormationMgr FormationMgr::instance()
