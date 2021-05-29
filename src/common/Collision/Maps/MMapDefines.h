@@ -15,8 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAPDEFINES_H
-#define _MAPDEFINES_H
+#ifndef MMapDefines_h__
+#define MMapDefines_h__
 
 #include "Define.h"
 #include "DetourNavMesh.h"
@@ -69,4 +69,4 @@ enum NavTerrainFlag
     NAV_MAGMA_SLIME  = 1 << (NAV_AREA_MAX_VALUE - NAV_AREA_MAGMA_SLIME)
 };
 
-#endif /* _MAPDEFINES_H */
+#endif // MMapDefines_h__

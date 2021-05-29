@@ -17,8 +17,8 @@
 
 #include "MapBuilder.h"
 #include "IntermediateValues.h"
-#include "MapDefines.h"
 #include "MapTree.h"
+#include "MMapDefines.h"
 #include "ModelInstance.h"
 #include "PathCommon.h"
 #include "StringFormat.h"
