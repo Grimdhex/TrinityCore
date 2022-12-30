@@ -56,7 +56,8 @@ Location MoveSpline::ComputePosition() const
         {
             Vector3 hermite;
             spline.evaluate_derivative(point_Idx, u, hermite);
-            c.orientation = std::atan2(hermite.y, hermite.x);
+            if (hermite.x != 0.f || hermite.y != 0.f)
+                c.orientation = std::atan2(hermite.y, hermite.x);
         }
 
         if (splineflags.backward)
