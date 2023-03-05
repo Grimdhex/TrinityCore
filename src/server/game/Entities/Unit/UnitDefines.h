@@ -341,7 +341,7 @@ enum MovementFlags2 : uint32
     MOVEMENTFLAG2_UNK16                                 = 0x00008000
 };
 
-enum UnitMoveType
+enum UnitMoveType : uint8
 {
     MOVE_WALK           = 0,
     MOVE_RUN            = 1,
