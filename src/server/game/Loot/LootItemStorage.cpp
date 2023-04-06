@@ -66,16 +66,7 @@ void LootItemStorage::LoadStorageFromDB()
             Field* fields = result->Fetch();
 
             uint32 key = fields[0].GetUInt32();
-            auto itr = _lootItemStore.find(key);
-            if (itr == _lootItemStore.end())
-            {
-                bool added;
-                std::tie(itr, added) = _lootItemStore.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key));
-
-                ASSERT(added);
-            }
-
-            StoredLootContainer& storedContainer = itr->second;
+            StoredLootContainer& storedContainer = _lootItemStore.try_emplace(key, key).first->second;
 
             LootItem lootItem;
             lootItem.itemid = fields[1].GetUInt32();
@@ -110,16 +101,7 @@ void LootItemStorage::LoadStorageFromDB()
             Field* fields = result->Fetch();
 
             uint32 key = fields[0].GetUInt32();
-            auto itr = _lootItemStore.find(key);
-            if (itr == _lootItemStore.end())
-            {
-                bool added;
-                std::tie(itr, added) = _lootItemStore.emplace(std::piecewise_construct, std::forward_as_tuple(key), std::forward_as_tuple(key));
-
-                ASSERT(added);
-            }
-
-            StoredLootContainer& storedContainer = itr->second;
+            StoredLootContainer& storedContainer = _lootItemStore.try_emplace(key, key).first->second;
             storedContainer.AddMoney(fields[1].GetUInt32(), trans);
 
             ++count;
