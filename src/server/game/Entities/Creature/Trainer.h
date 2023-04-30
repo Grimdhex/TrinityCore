@@ -65,7 +65,7 @@ namespace Trainer
     class TC_GAME_API Trainer
     {
     public:
-        Trainer(uint32 trainerId, Type type, uint32 requirement, std::string greeting, std::vector<Spell> spells);
+        Trainer(uint32 trainerId, Type type, uint32 requirement, std::string_view greeting, std::vector<Spell> spells);
 
         Spell const* GetSpell(uint32 spellId) const;
         std::vector<Spell> const& GetSpells() const { return _spells; }
@@ -84,7 +84,7 @@ namespace Trainer
         std::string const& GetGreeting(LocaleConstant locale) const;
 
         friend ObjectMgr;
-        void AddGreetingLocale(LocaleConstant locale, std::string greeting);
+        void AddGreetingLocale(LocaleConstant locale, std::string_view greeting);
 
         uint32 _trainerId;
         Type _type;
