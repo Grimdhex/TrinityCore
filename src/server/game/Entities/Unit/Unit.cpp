@@ -298,12 +298,12 @@ bool DispelableAura::RollDispel() const
 }
 
 Unit::Unit(bool isWorldObject) :
-    WorldObject(isWorldObject), m_lastSanctuaryTime(0), LastCharmerGUID(), movespline(new Movement::MoveSpline()),
+    WorldObject(isWorldObject), m_lastSanctuaryTime(0), LastCharmerGUID(), movespline(std::make_unique<Movement::MoveSpline>()),
     m_ControlledByPlayer(false), m_AutoRepeatFirstCast(false), m_procDeep(0), m_transformSpell(0),
     m_removedAurasCount(0), m_charmer(nullptr), m_charmed(nullptr),
-    i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_vehicle(nullptr), m_vehicleKit(nullptr),
+    i_motionMaster(std::make_unique<MotionMaster>(this)), m_regenTimer(0), m_vehicle(nullptr),
     m_unitTypeMask(UNIT_MASK_NONE), m_Diminishing(), m_combatManager(this), m_threatManager(this),
-    m_aiLocked(false), m_comboTarget(nullptr), m_comboPoints(0), _spellHistory(new SpellHistory(this))
+    m_aiLocked(false), m_comboTarget(nullptr), m_comboPoints(0), _spellHistory(std::make_unique<SpellHistory>(this))
 {
     m_objectType |= TYPEMASK_UNIT;
     m_objectTypeId = TYPEID_UNIT;
@@ -326,14 +326,7 @@ Unit::Unit(bool isWorldObject) :
     m_state = 0;
     m_deathState = ALIVE;
 
-    for (uint8 i = 0; i < CURRENT_MAX_SPELL; ++i)
-        m_currentSpells[i] = nullptr;
-
-    for (uint8 i = 0; i < MAX_SUMMON_SLOT; ++i)
-        m_SummonSlot[i].Clear();
-
-    for (uint8 i = 0; i < MAX_GAMEOBJECT_SLOT; ++i)
-        m_ObjectSlot[i].Clear();
+    m_currentSpells = { };
 
     m_auraUpdateIterator = m_ownedAuras.end();
 
@@ -359,8 +352,7 @@ Unit::Unit(bool isWorldObject) :
         m_weaponDamage[i][MAXDAMAGE][1] = 0.f;
     }
 
-    for (uint8 i = 0; i < MAX_STATS; ++i)
-        m_createStats[i] = 0.0f;
+    m_createStats = { };
 
     m_attacking = nullptr;
     m_modMeleeHitChance = 0.0f;
@@ -370,15 +362,13 @@ Unit::Unit(bool isWorldObject) :
 
     m_lastManaUse = 0;
 
-    for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
-        m_speed_rate[i] = 1.0f;
+    m_speed_rate.fill(1.0f);
 
     m_charmInfo = nullptr;
     _gameClientMovingMe = nullptr;
 
     // remove aurastates allowing special moves
-    for (uint8 i = 0; i < MAX_REACTIVE; ++i)
-        m_reactiveTimer[i] = 0;
+    m_reactiveTimer = { };
 
     m_cleanupDone = false;
     m_duringRemoveFromWorld = false;
@@ -400,21 +390,18 @@ Unit::Unit(bool isWorldObject) :
 Unit::~Unit()
 {
     // set current spells as deletable
-    for (uint8 i = 0; i < CURRENT_MAX_SPELL; ++i)
+    for (size_t i = 0; i < m_currentSpells.size(); ++i)
+    {
         if (m_currentSpells[i])
         {
             m_currentSpells[i]->SetReferencedFromCurrent(false);
             m_currentSpells[i] = nullptr;
         }
+    }
 
     m_Events.KillAllEvents(true);
 
     _DeleteRemovedAuras();
-
-    delete i_motionMaster;
-    delete m_charmInfo;
-    delete movespline;
-    delete _spellHistory;
 
     ASSERT(!m_duringRemoveFromWorld);
     ASSERT(!m_attacking);
@@ -9710,9 +9697,9 @@ void Unit::UpdateCharmAI()
 CharmInfo* Unit::InitCharmInfo()
 {
     if (!m_charmInfo)
-        m_charmInfo = new CharmInfo(this);
+        m_charmInfo = std::make_unique<CharmInfo>(this);
 
-    return m_charmInfo;
+    return m_charmInfo.get();
 }
 
 void Unit::DeleteCharmInfo()
@@ -9721,7 +9708,6 @@ void Unit::DeleteCharmInfo()
         return;
 
     m_charmInfo->RestoreState();
-    delete m_charmInfo;
     m_charmInfo = nullptr;
 }
 
