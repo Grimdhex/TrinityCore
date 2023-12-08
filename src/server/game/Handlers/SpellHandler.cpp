@@ -239,7 +239,10 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
         CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHARACTER_GIFT_BY_ITEM);
         stmt->setUInt32(0, item->GetGUID().GetCounter());
         _queryProcessor.AddCallback(CharacterDatabase.AsyncQuery(stmt)
-            .WithPreparedCallback(std::bind(&WorldSession::HandleOpenWrappedItemCallback, this, item->GetPos(), item->GetGUID(), std::placeholders::_1)));
+            .WithPreparedCallback([this, itemPos = item->GetPos(), itemGuid = item->GetGUID()](PreparedQueryResult result) mutable
+            {
+                HandleOpenWrappedItemCallback(std::move(itemPos), std::move(itemGuid), std::move(result));
+            }));
     }
     else
         player->SendLoot(item->GetGUID(), LOOT_CORPSE);

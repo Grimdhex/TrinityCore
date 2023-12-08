@@ -36,7 +36,7 @@ public:
 
     AsyncAcceptor(Trinity::Asio::IoContext& ioContext, std::string const& bindIp, uint16 port) :
         _acceptor(ioContext), _endpoint(Trinity::Net::make_address(bindIp), port),
-        _socket(ioContext), _closed(false), _socketFactory(std::bind(&AsyncAcceptor::DefeaultSocketFactory, this))
+        _socket(ioContext), _closed(false), _socketFactory([this] { return DefeaultSocketFactory(); })
     {
     }
 
@@ -115,7 +115,7 @@ public:
         _acceptor.close(err);
     }
 
-    void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
+    void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = std::move(func); }
 
 private:
     std::pair<tcp::socket*, uint32> DefeaultSocketFactory() { return std::make_pair(&_socket, 0); }
