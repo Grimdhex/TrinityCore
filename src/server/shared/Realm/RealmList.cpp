@@ -46,7 +46,7 @@ void RealmList::Initialize(Trinity::Asio::IoContext& ioContext, uint32 updateInt
 
     ClientBuild::LoadBuildInfo();
     // Get the content of the realmlist table in the database
-    UpdateRealms(boost::system::error_code());
+    UpdateRealms();
 }
 
 void RealmList::Close()
@@ -78,11 +78,8 @@ void RealmList::UpdateRealm(RealmHandle const& id, uint32 build, std::string con
     realm.Port = port;
 }
 
-void RealmList::UpdateRealms(boost::system::error_code const& error)
+void RealmList::UpdateRealms()
 {
-    if (error)
-        return;
-
     TC_LOG_DEBUG("server.authserver", "Updating Realm List...");
 
     LoginDatabasePreparedStatement *stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_REALMLIST);
@@ -168,7 +165,13 @@ void RealmList::UpdateRealms(boost::system::error_code const& error)
     if (_updateInterval)
     {
         _updateTimer->expires_from_now(boost::posix_time::seconds(_updateInterval));
-        _updateTimer->async_wait(std::bind(&RealmList::UpdateRealms, this, std::placeholders::_1));
+        _updateTimer->async_wait([this](boost::system::error_code const& error)
+        {
+            if (error)
+                return;
+
+            UpdateRealms();
+        });
     }
 }
 

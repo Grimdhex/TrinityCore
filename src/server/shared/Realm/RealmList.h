@@ -22,14 +22,6 @@
 #include "Realm.h"
 #include <map>
 
-namespace boost
-{
-    namespace system
-    {
-        class error_code;
-    }
-}
-
 /// Storage object for the list of realms on the server
 class TC_SHARED_API RealmList
 {
@@ -49,7 +41,7 @@ public:
 private:
     RealmList();
 
-    void UpdateRealms(boost::system::error_code const& error);
+    void UpdateRealms();
     void UpdateRealm(RealmHandle const& id, uint32 build, std::string const& name,
         boost::asio::ip::address&& address, boost::asio::ip::address&& localAddr, boost::asio::ip::address&& localSubmask,
         uint16 port, uint8 icon, RealmFlags flag, uint8 timezone, AccountTypes allowedSecurityLevel, float population);
@@ -61,4 +53,5 @@ private:
 };
 
 #define sRealmList RealmList::Instance()
+
 #endif
