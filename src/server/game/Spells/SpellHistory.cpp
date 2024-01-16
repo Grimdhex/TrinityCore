@@ -16,6 +16,7 @@
  */
 
 #include "SpellHistory.h"
+#include "CharmInfo.h"
 #include "DatabaseEnv.h"
 #include "Item.h"
 #include "ObjectMgr.h"

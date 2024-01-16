@@ -22,6 +22,7 @@
  */
 
 #include "ScriptMgr.h"
+#include "CharmInfo.h"
 #include "Containers.h"
 #include "CreatureAI.h"
 #include "DBCStores.h"
