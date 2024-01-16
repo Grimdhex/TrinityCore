@@ -19,6 +19,7 @@
 #include "AccountMgr.h"
 #include "Battleground.h"
 #include "CellImpl.h"
+#include "CharmInfo.h"
 #include "Common.h"
 #include "Creature.h"
 #include "CreatureAI.h"

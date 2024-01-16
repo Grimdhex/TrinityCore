@@ -18,6 +18,7 @@
 #include "Creature.h"
 #include "BattlegroundMgr.h"
 #include "CellImpl.h"
+#include "CharmInfo.h"
 #include "Common.h"
 #include "Containers.h"
 #include "CreatureAI.h"
@@ -2861,6 +2862,11 @@ std::string const & Creature::GetNameForLocaleIdx(LocaleConstant loc_idx) const
     }
 
     return GetName();
+}
+
+uint8 Creature::GetPetAutoSpellSize() const
+{
+    return MAX_SPELL_CHARM;
 }
 
 uint32 Creature::GetPetAutoSpellOnPos(uint8 pos) const

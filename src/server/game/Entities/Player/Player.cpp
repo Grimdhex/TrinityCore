@@ -31,6 +31,7 @@
 #include "ChannelMgr.h"
 #include "CharacterCache.h"
 #include "CharacterDatabaseCleaner.h"
+#include "CharmInfo.h"
 #include "Chat.h"
 #include "CinematicMgr.h"
 #include "CombatLogPackets.h"
