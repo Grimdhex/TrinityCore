@@ -910,7 +910,7 @@ private:
     PlayerTalentInfo(PlayerTalentInfo const&);
 };
 
-class TC_GAME_API Player : public Unit, public GridObject<Player>
+class TC_GAME_API Player final : public Unit, public GridObject<Player>
 {
     friend class WorldSession;
     friend class CinematicMgr;

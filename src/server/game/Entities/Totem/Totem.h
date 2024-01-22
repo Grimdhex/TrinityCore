@@ -35,7 +35,7 @@ enum TotemType
 #define SENTRY_STONECLAW_SPELLID  55277
 #define SENTRY_BIND_SIGHT_SPELLID  6277
 
-class TC_GAME_API Totem : public Minion
+class TC_GAME_API Totem final : public Minion
 {
     public:
         Totem(SummonPropertiesEntry const* properties, Unit* owner);
