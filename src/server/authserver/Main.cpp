@@ -34,6 +34,7 @@
 #include "IPLocation.h"
 #include "GitRevision.h"
 #include "Locales.h"
+#include "Memory.h"
 #include "MySQLThreading.h"
 #include "OpenSSLCrypto.h"
 #include "ProcessPriority.h"
@@ -100,6 +101,8 @@ int main(int argc, char** argv)
     if (vm.count("help") || vm.count("version"))
         return 0;
 
+    uint32 dummy = 0;
+
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
     if (winServiceAction == "install")
         return WinServiceInstall() == true ? 0 : 1;
@@ -155,7 +158,7 @@ int main(int argc, char** argv)
 
     OpenSSLCrypto::threadsSetup(boost::dll::program_location().remove_filename());
 
-    std::shared_ptr<void> opensslHandle(nullptr, [](void*) { OpenSSLCrypto::threadsCleanup(); });
+    auto opensslHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { OpenSSLCrypto::threadsCleanup(); });
 
     // authserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
@@ -174,7 +177,7 @@ int main(int argc, char** argv)
     if (!StartDB())
         return 1;
 
-    std::shared_ptr<void> dbHandle(nullptr, [](void*) { StopDB(); });
+    auto dbHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { StopDB(); });
 
     if (vm.count("update-databases-only"))
         return 0;
@@ -189,7 +192,7 @@ int main(int argc, char** argv)
     // Get the list of realms for the server
     sRealmList->Initialize(*ioContext, sConfigMgr->GetIntDefault("RealmsStateUpdateDelay", 20));
 
-    std::shared_ptr<void> sRealmListHandle(nullptr, [](void*) { sRealmList->Close(); });
+    auto sRealmListHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { sRealmList->Close(); });
 
     if (sRealmList->GetRealms().empty())
     {
@@ -213,7 +216,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::shared_ptr<void> sAuthSocketMgrHandle(nullptr, [](void*) { sAuthSocketMgr.StopNetwork(); });
+    auto sAuthSocketMgrHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { sAuthSocketMgr.StopNetwork(); });
 
     // Set signal handlers
     boost::asio::signal_set signals(*ioContext, SIGINT, SIGTERM);
