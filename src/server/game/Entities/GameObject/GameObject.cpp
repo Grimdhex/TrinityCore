@@ -108,7 +108,7 @@ QuaternionData QuaternionData::fromEulerAnglesZYX(float Z, float Y, float X)
 }
 
 GameObject::GameObject() : WorldObject(false), MapObject(),
-    m_model(nullptr), m_goValue(), m_AI(nullptr), m_respawnCompatibilityMode(false)
+    m_model(nullptr), m_goValue(), m_stringIds(), m_AI(nullptr), m_respawnCompatibilityMode(false)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
     m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -416,7 +416,7 @@ bool GameObject::Create(uint32 entry, Map* map, uint32 phaseMask, Position const
 
     LastUsedScriptID = GetGOInfo()->ScriptId;
 
-    m_stringIds[AsUnderlyingType(StringIdType::Template)] = goinfo->StringId;
+    m_stringIds[AsUnderlyingType(StringIdType::Template)] = &goinfo->StringId;
 
     AIM_Initialize();
 
@@ -1170,7 +1170,7 @@ bool GameObject::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap
 
     m_goData = data;
 
-    m_stringIds[AsUnderlyingType(StringIdType::Spawn)] = data->StringId;
+    m_stringIds[AsUnderlyingType(StringIdType::Spawn)] = &data->StringId;
 
     if (addToMap && !GetMap()->AddToMap(this))
         return false;
@@ -2311,7 +2311,7 @@ void GameObject::InheritStringIds(GameObject const* parent)
 
 bool GameObject::HasStringId(std::string_view id) const
 {
-    return std::find(m_stringIds.begin(), m_stringIds.end(), id) != m_stringIds.end();
+    return std::ranges::any_of(m_stringIds, [id](std::string const* stringId) { return stringId && *stringId == id; });
 }
 
 void GameObject::SetScriptStringId(std::string id)
@@ -2319,12 +2319,12 @@ void GameObject::SetScriptStringId(std::string id)
     if (!id.empty())
     {
         m_scriptStringId.emplace(std::move(id));
-        m_stringIds[AsUnderlyingType(StringIdType::Script)] = *m_scriptStringId;
+        m_stringIds[AsUnderlyingType(StringIdType::Script)] = &*m_scriptStringId;
     }
     else
     {
         m_scriptStringId.reset();
-        m_stringIds[AsUnderlyingType(StringIdType::Script)] = {};
+        m_stringIds[AsUnderlyingType(StringIdType::Script)] = nullptr;
     }
 }
 
