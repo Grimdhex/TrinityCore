@@ -64,6 +64,7 @@ enum ZLiquidStatus : uint32;
 typedef std::unordered_map<Player*, UpdateData> UpdateDataMapType;
 
 float const DEFAULT_COLLISION_HEIGHT = 2.03128f; // Most common value in dbc
+static constexpr Milliseconds const HEARTBEAT_INTERVAL = 5s + 200ms;
 
 class TC_GAME_API Object
 {
@@ -575,6 +576,9 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         virtual bool IsInvisibleDueToDespawn() const { return false; }
         //difference from IsAlwaysVisibleFor: 1. after distance check; 2. use owner or charmer as seer
         virtual bool IsAlwaysDetectableFor(WorldObject const* /*seer*/) const { return false; }
+
+        virtual void Heartbeat() { }
+
     private:
         Map* m_currMap;                                   // current object's Map location
 
@@ -582,6 +586,9 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         uint32 m_phaseMask;                               // in area phase state
 
         uint16 m_notifyflags;
+
+        Milliseconds _heartbeatTimer;
+
         virtual bool _IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D, bool incOwnRadius = true, bool incTargetRadius = true) const;
 
         bool CanNeverSee(WorldObject const* obj) const;
