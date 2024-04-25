@@ -704,6 +704,8 @@ class TC_GAME_API Unit : public WorldObject
 
         virtual void Update(uint32 time) override;
 
+        void Heartbeat() override;
+
         void setAttackTimer(WeaponAttackType type, uint32 time) { m_attackTimer[type] = time; }
         void resetAttackTimer(WeaponAttackType type = BASE_ATTACK);
         uint32 getAttackTimer(WeaponAttackType type) const { return m_attackTimer[type]; }
@@ -1792,6 +1794,7 @@ class TC_GAME_API Unit : public WorldObject
     private:
         void UpdateSplineMovement(uint32 t_diff);
         void UpdateSplinePosition();
+        void SendFlightSplineSyncUpdate();
         void InterruptMovementBasedAuras();
         void CheckPendingMovementAcks();
 
@@ -1812,7 +1815,6 @@ class TC_GAME_API Unit : public WorldObject
     private:
         uint32 m_state;                                     // Even derived shouldn't modify
         uint32 m_lastManaUse;                               // msecs
-        TimeTracker m_splineSyncTimer;
 
         Diminishing m_Diminishing;
 
