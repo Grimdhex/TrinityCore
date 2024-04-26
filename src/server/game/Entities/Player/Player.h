@@ -1761,7 +1761,8 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
         void SetSemaphoreTeleportFar(bool semphsetting) { mSemaphoreTeleport_Far = semphsetting; }
         void ProcessDelayedOperations();
 
-        void CheckAreaExploreAndOutdoor(void);
+        void CheckAreaExplore();
+        void CheckOutdoorsAuraRequirements();
 
         static uint32 TeamForRace(uint8 race);
         uint32 GetTeam() const { return m_team; }
