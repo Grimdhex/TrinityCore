@@ -2695,6 +2695,28 @@ void UnitAura::AddStaticApplication(Unit* target, uint8 effMask)
     _staticApplications[target->GetGUID()] |= effMask;
 }
 
+void UnitAura::Heartbeat()
+{
+    Aura::Heartbeat();
+
+    // Periodic food and drink emote animation
+    HandlePeriodicFoodSpellVisualKit();
+}
+
+void UnitAura::HandlePeriodicFoodSpellVisualKit()
+{
+    SpellSpecificType specificType = GetSpellInfo()->GetSpellSpecific();
+
+    bool food = specificType == SPELL_SPECIFIC_FOOD || specificType == SPELL_SPECIFIC_FOOD_AND_DRINK;
+    bool drink = specificType == SPELL_SPECIFIC_DRINK || specificType == SPELL_SPECIFIC_FOOD_AND_DRINK;
+
+    if (food)
+        GetUnitOwner()->SendPlaySpellVisual(SPELL_VISUAL_KIT_FOOD);
+
+    if (drink)
+        GetUnitOwner()->SendPlaySpellVisual(SPELL_VISUAL_KIT_DRINK);
+}
+
 DynObjAura::DynObjAura(AuraCreateInfo const& createInfo)
     : Aura(createInfo)
 {
