@@ -1551,7 +1551,7 @@ void World::LoadConfigSettings(bool reload)
 }
 
 /// Initialize the World
-void World::SetInitialWorldSettings()
+bool World::SetInitialWorldSettings()
 {
     if (uint32 realmId = sConfigMgr->GetIntDefault("RealmID", 0)) // 0 reserved for auth
         sLog->SetRealmId(realmId);
@@ -1591,7 +1591,7 @@ void World::SetInitialWorldSettings()
             !MapManager::ExistMapAndVMap(530, -3961.64f, -13931.2f))))
     {
         TC_LOG_FATAL("server.loading", "Unable to load critical files - server shutting down !!!");
-        exit(1);
+        return false;
     }
 
     ///- Initialize pool manager
@@ -1604,7 +1604,7 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Trinity strings...");
     if (!sObjectMgr->LoadTrinityStrings())
-        exit(1);                                            // Error message displayed in function already
+        return false;                                       // Error message displayed in function already
 
     ///- Update the realm entry in the database with the realm type from the config file
     //No SQL injection as values are treated as integers
@@ -2230,6 +2230,8 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.worldserver", "World initialized in {} minutes {} seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
 
     TC_METRIC_EVENT("events", "World initialized", "World initialized in " + std::to_string(startupDuration / 60000) + " minutes " + std::to_string((startupDuration % 60000) / 1000) + " seconds");
+
+    return true;
 }
 
 void World::DetectDBCLang()
