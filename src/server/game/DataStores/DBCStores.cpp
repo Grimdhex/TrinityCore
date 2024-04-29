@@ -643,7 +643,7 @@ void LoadDBCStores(const std::string& dataPath)
     // error checks
     if (bad_dbc_files.size() >= DBCFileCount)
     {
-        TC_LOG_ERROR("misc", "Incorrect DataDir value in worldserver.conf or ALL required *.dbc files ({}) not found by path: {}dbc", DBCFileCount, dataPath);
+        TC_LOG_FATAL("misc", "Incorrect DataDir value in worldserver.conf or ALL required *.dbc files ({}) not found by path: {}dbc", DBCFileCount, dataPath);
         exit(1);
     }
     else if (!bad_dbc_files.empty())
@@ -652,7 +652,7 @@ void LoadDBCStores(const std::string& dataPath)
         for (StoreProblemList::iterator i = bad_dbc_files.begin(); i != bad_dbc_files.end(); ++i)
             str += *i + "\n";
 
-        TC_LOG_ERROR("misc", "Some required *.dbc files ({} from {}) not found or not compatible:\n{}", (uint32)bad_dbc_files.size(), DBCFileCount, str);
+        TC_LOG_FATAL("misc", "Some required *.dbc files ({} from {}) not found or not compatible:\n{}", (uint32)bad_dbc_files.size(), DBCFileCount, str);
         exit(1);
     }
 
