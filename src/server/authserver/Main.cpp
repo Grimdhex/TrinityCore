@@ -191,7 +191,7 @@ int main(int argc, char** argv)
     // Get the list of realms for the server
     sRealmList->Initialize(*ioContext, sConfigMgr->GetIntDefault("RealmsStateUpdateDelay", 20));
 
-    auto sRealmListHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { sRealmList->Close(); });
+    auto sRealmListHandle = Trinity::make_unique_ptr_with_deleter(sRealmList, [](RealmList* realmList) { realmList->Close(); });
 
     if (sRealmList->GetRealms().empty())
     {
@@ -215,7 +215,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    auto sAuthSocketMgrHandle = Trinity::make_unique_ptr_with_deleter(&dummy, [](void*) { sAuthSocketMgr.StopNetwork(); });
+    auto sAuthSocketMgrHandle = Trinity::make_unique_ptr_with_deleter(&sAuthSocketMgr, [](AuthSocketMgr* authSocketMgr) { authSocketMgr->StopNetwork(); });
 
     // Set signal handlers
     boost::asio::signal_set signals(*ioContext, SIGINT, SIGTERM);
