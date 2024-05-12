@@ -913,12 +913,26 @@ void WorldSession::HandleWrapItemOpcode(WorldPacket& recvData)
 
     switch (item->GetEntry())
     {
-        case 5042:  item->SetEntry(5043); break;
-        case 5048:  item->SetEntry(5044); break;
-        case 17303: item->SetEntry(17302); break;
-        case 17304: item->SetEntry(17305); break;
-        case 17307: item->SetEntry(17308); break;
-        case 21830: item->SetEntry(21831); break;
+        case ITEM_RED_RIBBONED_WRAPPING_PAPER:
+            item->SetEntry(ITEM_RED_RIBBONED_GIFT);
+            break;
+        case ITEM_BLUE_RIBBONED_WRAPPING_PAPER:
+            item->SetEntry(ITEM_BLUE_RIBBONED_GIFT);
+            break;
+        case ITEM_BLUE_RIBBONED_HOLIDAY_WRAPPING_PAPER:
+            item->SetEntry(ITEM_BLUE_RIBBONED_HOLIDAY_GIFT);
+            break;
+        case ITEM_GREEN_RIBBONED_WRAPPING_PAPER:
+            item->SetEntry(ITEM_GREEN_RIBBONED_HOLIDAY_GIFT);
+            break;
+        case ITEM_PURPLE_RIBBONED_WRAPPING_PAPER:
+            item->SetEntry(ITEM_PURPLE_RIBBONED_HOLIDAY_GIFT);
+            break;
+        case ITEM_EMPTY_WRAPPER:
+            item->SetEntry(ITEM_WRAPPED_GIFT);
+            break;
+        default:
+            break;
     }
     item->SetGuidValue(ITEM_FIELD_GIFTCREATOR, _player->GetGUID());
     item->SetUInt32Value(ITEM_FIELD_FLAGS, ITEM_FIELD_FLAG_WRAPPED);
