@@ -55,8 +55,8 @@ struct ObjectGuidInfo
 
         if constexpr (Width != 0)
         {
-            if (std::distance(buf.data(), end) < Width)
-                std::fill_n(ctx.out(), Width - std::distance(buf.data(), end), '0');
+            if (std::ptrdiff_t written = std::distance(buf.data(), end); written < Width)
+                std::fill_n(ctx.out(), Width - written, '0');
         }
 
         if constexpr (Base > 10)
