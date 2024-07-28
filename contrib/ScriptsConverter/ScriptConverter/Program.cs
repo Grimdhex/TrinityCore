@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +11,16 @@ namespace ScriptConverter {
         static void Main(string[] args) {
             if (args.Length != 1) {
                 Console.WriteLine("Usage: ScriptsConverter.exe [path_to_dir|path_to_file]");
-            } else {
+            }
+            else {
                 string path = args[0];
                 if (File.Exists(path)) {
                     ProcessFile(path);
-                } else if (Directory.Exists(path)) {
+                }
+                else if (Directory.Exists(path)) {
                     ProcessDirectory(path);
-                } else {
+                }
+                else {
                     Console.WriteLine("Invalid file or directory specified.\r\n\r\nUsage: ScriptsConverter.exe [path_to_dir|path_to_file]");
                 }
             }
@@ -38,9 +41,9 @@ namespace ScriptConverter {
             public int type = 0;
             public string name;
             public ArrayList methods = new ArrayList();
-            public string instanceName = null;
-            public string aiName = null;
-            public string[] special = new string[] { "GetAI_", "GetInstance_", "GetInstanceData_" };
+            public string instanceName;
+            public string aiName;
+            public string[] special = { "GetAI_", "GetInstance_", "GetInstanceData_" };
 
             public void AddMethod(string method) {
                 methods.Add(method);
@@ -54,8 +57,9 @@ namespace ScriptConverter {
                         if (i == 1) {
                             aiName = name + "AI";
                         }
-                        if (i == 2 || i == 3)
+                        if (i == 2 || i == 3) {
                             instanceName = name;
+                        } 
                     }
                 }
             }
@@ -63,23 +67,25 @@ namespace ScriptConverter {
             public override string ToString() {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat("Script: {0}\n", name);
-                foreach (string method in methods)
+                foreach (string method in methods) {
                     sb.Append("    ").Append(method).Append("\n");
+                }
                 sb.Append("\n");
                 return sb.ToString();
             }
         }
 
         static string GetMethod(string method, ref string txt, ref int minPos) {
-            string res = null;
+            string res;
             Regex r = new Regex(method + "(\\s|:|[(])");
             Match m = r.Match(txt);
+
             if (m.Success) {
                 int pos = m.Index;
                 while (pos-- >= 0 && pos < txt.Length) {
                     if (txt[pos] == '\n') break;
                 }
-                //pos++;
+
                 int lastPos = txt.IndexOf("\n}", pos);
                 if (lastPos != -1) {
                     lastPos += 2;
@@ -112,14 +118,12 @@ namespace ScriptConverter {
                 if (line.IndexOf("->RegisterSelf();") != -1) {
                     scriptStart = true;
                     data = new ScriptData();
-                    continue;
                 }
                 if (scriptStart) {
                     if (line.IndexOf("= new Script") != -1) {
                         scriptStart = false;
                         scripts.Add(data);
                         data = null;
-                        continue;
                     }
                     Regex r = new Regex("newscript->([a-zA-Z]+) *= *&?([\"_a-zA-Z0-9]+);");
                     Match m = r.Match(line);
@@ -130,7 +134,6 @@ namespace ScriptConverter {
                             data.AddMethod(m.Groups[2].Value);
                         }
                     }
-                    continue;
                 }
             }
             if (scripts.Count != 0) {
@@ -156,8 +159,9 @@ namespace ScriptConverter {
                                 Match m = r.Match(txt);
                                 int startPos = m.Index;
                                 int endPos = txt.IndexOf("\n}", startPos);
-                                if (endPos != -1)
+                                if (endPos != -1) {
                                     endPos += 2;
+                                }
                                 while (endPos++ >= 0 && endPos < txt.Length) {
                                     if (txt[endPos] == '\n') break;
                                 }
@@ -182,24 +186,34 @@ namespace ScriptConverter {
                             case 1: typeName = "CreatureScript"; break;
                             case 2: typeName = "InstanceMapScript"; break;
                             default:
-                                if (sd.name.IndexOf("npc") == 0)
+                                if (sd.name.IndexOf("npc") == 0) {
                                     typeName = "CreatureScript";
-                                else if (sd.name.IndexOf("mob") == 0)
+                                }
+                                else if (sd.name.IndexOf("mob") == 0) {
                                     typeName = "CreatureScript";
-                                else if (sd.name.IndexOf("boss_") == 0)
+                                }
+                                else if (sd.name.IndexOf("boss_") == 0) {
                                     typeName = "CreatureScript";
-                                else if (sd.name.IndexOf("item_") == 0)
+                                }
+                                else if (sd.name.IndexOf("item_") == 0) {
                                     typeName = "ItemScript";
-                                else if (sd.name.IndexOf("go_") == 0)
+                                }
+                                else if (sd.name.IndexOf("go_") == 0) {
                                     typeName = "GameObjectScript";
-                                else if (sd.name.IndexOf("at_") == 0)
+                                }
+                                else if (sd.name.IndexOf("at_") == 0) {
                                     typeName = "AreaTriggerScript";
-                                else if (sd.name.IndexOf("instance_") == 0)
+                                }
+                                else if (sd.name.IndexOf("instance_") == 0) {
                                     typeName = "InstanceMapScript";
+                                }
                                 break;
                         }
-                        if (sd.instanceName != null)
+
+                        if (sd.instanceName != null) {
                             ss = ss.Replace(sd.instanceName, sd.instanceName + "_InstanceMapScript");
+                        }
+
                         ss = ss.Replace("\n", "\n    ");
                         ss = "class " + sd.name + " : public " + typeName + "\n{\npublic:\n    " +
                             sd.name + "() : " + typeName + "(\"" + sd.name + "\") { }\n" + ss + "\n};";
@@ -217,7 +231,6 @@ namespace ScriptConverter {
                     txt = txt.Remove(m2.Index);
                     txt += "void AddSC_" + m2.Groups[1].Value + "()\n{\n" + register + "}\n";
                 }
-                // File.Copy(filePath, filePath + ".bkp");
                 txt = txt.Replace("\r\n", "\n");
                 File.WriteAllText(filePath, txt);
             }
