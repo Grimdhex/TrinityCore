@@ -17,12 +17,12 @@
 
 ## Build Status
 
-3.3.5 |
-:------------: |
-[![3.3.5 Build Status](https://circleci.com/gh/TrinityCore/TrinityCore/tree/3.3.5.svg?style=shield)](https://circleci.com/gh/TrinityCore/TrinityCore/tree/3.3.5) |
-[![Build status](https://ci.appveyor.com/api/projects/status/54d0u1fxe50ad80o/branch/3.3.5?svg=true)](https://ci.appveyor.com/project/DDuarte/trinitycore/branch/3.3.5) |
-[![3.3.5 GCC Build status](https://github.com/TrinityCore/TrinityCore/actions/workflows/gcc-build.yml/badge.svg?branch=3.3.5&event=push)](https://github.com/TrinityCore/TrinityCore/actions?query=workflow%3AGCC+branch%3A3.3.5+event%3Apush) |
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/4656/badge.svg)](https://scan.coverity.com/projects/4656) |
+3.3.5 Build | Code Quality |
+:------------: | :------------: |
+[![3.3.5 Build Status](https://circleci.com/gh/TrinityCore/TrinityCore/tree/3.3.5.svg?style=shield)](https://circleci.com/gh/TrinityCore/TrinityCore/tree/3.3.5) | [![CodeFactor](https://www.codefactor.io/repository/github/grimdhex/ipa-project/badge)](https://www.codefactor.io/repository/github/grimdhex/ipa-project) |
+[![Build status](https://ci.appveyor.com/api/projects/status/54d0u1fxe50ad80o/branch/3.3.5?svg=true)](https://ci.appveyor.com/project/DDuarte/trinitycore/branch/3.3.5) | [![Coverity Scan Build Status](https://scan.coverity.com/projects/30559/badge.svg)](https://scan.coverity.com/projects/30559) |
+[![3.3.5 GCC Build status](https://github.com/TrinityCore/TrinityCore/actions/workflows/gcc-build.yml/badge.svg?branch=3.3.5&event=push)](https://github.com/TrinityCore/TrinityCore/actions?query=workflow%3AGCC+branch%3A3.3.5+event%3Apush) | [![Codacy Badge](https://app.codacy.com/project/badge/Grade/eba6d6c44f694e24b4314bce20bd524e)](https://app.codacy.com/gh/Grimdhex/IPA-Project/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 
 ## Introduction
 
