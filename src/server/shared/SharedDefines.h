@@ -3802,14 +3802,6 @@ enum LineOfSightChecks
     LINEOFSIGHT_ALL_CHECKS      = (LINEOFSIGHT_CHECK_VMAP | LINEOFSIGHT_CHECK_GOBJECT)
 };
 
-enum ServerProcessTypes
-{
-    SERVER_PROCESS_AUTHSERVER = 0,
-    SERVER_PROCESS_WORLDSERVER = 1,
-
-    NUM_SERVER_PROCESS_TYPES
-};
-
 enum class MountResult : uint32
 {
     InvalidMountee = 0,
@@ -3868,19 +3860,6 @@ enum WorldState : uint32
     WS_DAILY_QUEST_RESET_TIME   = 20008,                     // Next daily quest reset time
     WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME = 20009,      // Next daily calendar deletions of old events time
 };
-
-namespace Trinity
-{
-namespace Impl
-{
-    struct TC_SHARED_API CurrentServerProcessHolder
-    {
-        static ServerProcessTypes type() { return _type; }
-        static ServerProcessTypes _type;
-    };
-}
-}
-#define THIS_SERVER_PROCESS (Trinity::Impl::CurrentServerProcessHolder::type())
 
 #define MAX_CREATURE_SPELL_DATA_SLOT 4
 

@@ -27,7 +27,7 @@
 #include <functional>
 #include <unordered_map>
 
-#define SECRET_FLAG_FOR(key, val, server) server ## _ ## key = (val ## ull << (16*SERVER_PROCESS_ ## server))
+#define SECRET_FLAG_FOR(key, val, server) server ## _ ## key = (val ## ull << (16*SECRET_OWNER_ ## server))
 #define SECRET_FLAG(key, val) SECRET_FLAG_ ## key = val, SECRET_FLAG_FOR(key, val, AUTHSERVER), SECRET_FLAG_FOR(key, val, WORLDSERVER)
 enum SecretFlags : uint64
 {
@@ -41,15 +41,17 @@ struct SecretInfo
     char const* configKey;
     char const* oldKey;
     int bits;
-    ServerProcessTypes owner;
+    SecretOwner owner;
     uint64 _flags;
-    uint16 flags() const { return static_cast<uint16>(_flags >> (16*THIS_SERVER_PROCESS)); }
+    uint16 flags() const { return static_cast<uint16>(_flags >> (16* SecretMgr::OWNER)); }
 };
 
 static constexpr SecretInfo secret_info[NUM_SECRETS] =
 {
-    { "TOTPMasterSecret", "TOTPOldMasterSecret", 128, SERVER_PROCESS_AUTHSERVER, WORLDSERVER_DEFER_LOAD }
+    { "TOTPMasterSecret", "TOTPOldMasterSecret", 128, SECRET_OWNER_AUTHSERVER, WORLDSERVER_DEFER_LOAD }
 };
+
+SecretOwner SecretMgr::OWNER;
 
 /*static*/ SecretMgr* SecretMgr::instance()
 {
@@ -83,8 +85,10 @@ static Optional<BigNumber> GetHexFromConfig(char const* configKey, int bits)
     return secret;
 }
 
-void SecretMgr::Initialize()
+void SecretMgr::Initialize(SecretOwner owner)
 {
+    OWNER = owner;
+
     for (uint32 i = 0; i < NUM_SECRETS; ++i)
     {
         if (secret_info[i].flags() & SECRET_FLAG_DEFER_LOAD)
@@ -124,7 +128,7 @@ void SecretMgr::AttemptLoad(Secrets i, LogLevel errorLevel, std::unique_lock<std
         (oldDigest && !Trinity::Crypto::Argon2::Verify(currentValue->AsHexStr(), *oldDigest)) // there is an old digest, and the current secret does not match it
         )
     {
-        if (info.owner != THIS_SERVER_PROCESS)
+        if (info.owner != OWNER)
         {
             if (currentValue)
                 TC_LOG_MESSAGE_BODY("server.loading", errorLevel, "Invalid value for '{}' specified - this is not actually the secret being used in your auth DB.", info.configKey);
