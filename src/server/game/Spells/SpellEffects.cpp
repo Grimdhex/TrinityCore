@@ -2665,6 +2665,7 @@ void Spell::EffectEnchantItemTmp()
     // Rockbiter Weapon apply to both weapon
     if (!itemTarget)
         return;
+
     if (m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags[0] & 0x400000)
     {
         uint32 spell_id = 0;
@@ -2696,7 +2697,6 @@ void Spell::EffectEnchantItemTmp()
         {
             TC_LOG_ERROR("spells", "Spell::EffectEnchantItemTmp: unknown spell id {}", spell_id);
             return;
-
         }
 
         for (int j = BASE_ATTACK; j <= OFF_ATTACK; ++j)

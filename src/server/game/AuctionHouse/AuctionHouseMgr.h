@@ -154,7 +154,6 @@ private:
     // Map of throttled players for GetAll, and throttle expiry time
     // Stored here, rather than player object to maintain persistence after logout
     PlayerGetAllThrottleMap GetAllThrottleMap;
-
 };
 
 class TC_GAME_API AuctionHouseMgr
@@ -194,7 +193,6 @@ class TC_GAME_API AuctionHouseMgr
         static AuctionHouseEntry const* GetAuctionHouseEntry(uint32 factionTemplateId);
         static AuctionHouseEntry const* GetAuctionHouseEntryFromHouse(uint8 houseId);
     public:
-
         //load first auction items, because of check if item exists, when loading
         void LoadAuctionItems();
         void LoadAuctions();
@@ -208,7 +206,6 @@ class TC_GAME_API AuctionHouseMgr
         void Update();
 
     private:
-
         AuctionHouseObject mHordeAuctions;
         AuctionHouseObject mAllianceAuctions;
         AuctionHouseObject mNeutralAuctions;

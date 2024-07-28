@@ -609,7 +609,6 @@ class BattlegroundSA : public Battleground
         bool IsSpellAllowed(uint32 spellId, Player const* player) const override;
 
     private:
-
         /**
          * \brief Called on setup and between the two round
          * -Delete all gameobject / creature

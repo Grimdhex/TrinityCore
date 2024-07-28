@@ -89,7 +89,6 @@ protected:
     void UninitializedSplineInitMethod(Vector3 const*, index_type, index_type) { ABORT(); }
 
 public:
-
     explicit SplineBase() : index_lo(0), index_hi(0), m_mode(UninitializedMode), cyclic(false), initialOrientation(0.f) { }
 
     /** Caclulates the position for given segment Idx, and percent of segment length t
@@ -141,11 +140,12 @@ class Spline : public SplineBase
 public:
     typedef length_type LengthType;
     typedef std::vector<length_type> LengthArray;
-protected:
 
+protected:
     LengthArray lengths;
 
     index_type computeIndexInBounds(length_type length) const;
+
 public:
 
     explicit Spline(){ }

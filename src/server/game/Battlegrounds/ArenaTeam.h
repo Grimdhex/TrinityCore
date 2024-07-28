@@ -187,7 +187,6 @@ class TC_GAME_API ArenaTeam
         uint32 GetPreviousOpponents() { return PreviousOpponents; }
 
     protected:
-
         uint32 TeamId;
         uint8 Type;
         std::string TeamName;

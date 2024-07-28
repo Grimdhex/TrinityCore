@@ -672,7 +672,6 @@ class TC_GAME_API SpellMgr
 
     // Modifiers
     public:
-
         // Loading data at server startup
         void UnloadSpellInfoChains();
         void LoadSpellTalentRanks();

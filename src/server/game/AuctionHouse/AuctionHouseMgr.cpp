@@ -352,7 +352,6 @@ void AuctionHouseMgr::LoadAuctionItems()
     while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} auction items in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
-
 }
 
 void AuctionHouseMgr::LoadAuctions()

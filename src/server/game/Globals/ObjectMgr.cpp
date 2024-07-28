@@ -747,7 +747,6 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 
         for (std::string_view aura : Trinity::Tokenize(fields[10].GetStringView(), ' ', false))
         {
-
             SpellInfo const* spellInfo = nullptr;
             if (Optional<uint32> spellId = Trinity::StringTo<uint32>(aura))
                 spellInfo = sSpellMgr->GetSpellInfo(*spellId);
@@ -6084,7 +6083,6 @@ void ObjectMgr::LoadPageTexts()
             PageTextContainer::const_iterator itr2 = _pageTextStore.find(itr->second.NextPageID);
             if (itr2 == _pageTextStore.end())
                 TC_LOG_ERROR("sql.sql", "Page text (ID: {}) has non-existing `NextPageID` ({})", itr->first, itr->second.NextPageID);
-
         }
     }
 
@@ -6347,10 +6345,8 @@ void ObjectMgr::LoadGossipText()
                     TC_LOG_ERROR("sql.sql", "GossipText (Id: {}) in table `npc_text` has non-existing or incompatible BroadcastTextID{} {}.", id, i, gOption.BroadcastTextID);
                     gOption.BroadcastTextID = 0;
                 }
-
             }
         }
-
     }
     while (result->NextRow());
 
@@ -9500,7 +9496,6 @@ void ObjectMgr::LoadVendors()
     QueryResult result = WorldDatabase.Query("SELECT entry, item, maxcount, incrtime, ExtendedCost FROM npc_vendor ORDER BY entry, slot ASC");
     if (!result)
     {
-
         TC_LOG_ERROR("sql.sql", ">>  Loaded 0 Vendors. DB table `npc_vendor` is empty!");
         return;
     }

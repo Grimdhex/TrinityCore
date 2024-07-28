@@ -718,7 +718,6 @@ struct TC_GAME_API CharmInfo
         void GetStayPosition(float &x, float &y, float &z);
 
     private:
-
         Unit* _unit;
         UnitActionBarEntry PetActionBar[MAX_UNIT_ACTION_BAR_INDEX];
         CharmSpellInfo _charmspells[4];
@@ -769,6 +768,7 @@ struct PositionUpdateInfo
 class TC_GAME_API Unit : public WorldObject
 {
     friend class WorldSession;
+
     public:
         typedef std::set<Unit*> AttackerSet;
         typedef std::set<Unit*> ControlList;
@@ -802,14 +802,15 @@ class TC_GAME_API Unit : public WorldObject
         void ScheduleAIChange();
         void PushAI(UnitAI* newAI);
         bool PopAI();
+
     protected:
         void SetAI(UnitAI* newAI);
         UnitAI* GetTopAI() const { return i_AIs.empty() ? nullptr : i_AIs.top().get(); }
         void RefreshAI();
         UnitAI* GetScheduledChangeAI();
         bool HasScheduledAIChange() const;
-    public:
 
+    public:
         void AddToWorld() override;
         void RemoveFromWorld() override;
 
@@ -1914,7 +1915,6 @@ class TC_GAME_API Unit : public WorldObject
         virtual void AtDisengage() {}
 
     private:
-
         void UpdateSplineMovement(uint32 t_diff);
         void UpdateSplinePosition();
         void InterruptMovementBasedAuras();
@@ -1935,7 +1935,6 @@ class TC_GAME_API Unit : public WorldObject
         uint32 m_rootTimes;
 
     private:
-
         uint32 m_state;                                     // Even derived shouldn't modify
         uint32 m_lastManaUse;                               // msecs
         TimeTracker m_splineSyncTimer;

@@ -700,7 +700,6 @@ void Object::SetByteValue(uint16 index, uint8 offset, uint8 value)
         _changesMask.SetBit(index);
 
         AddToObjectUpdateIfNeeded();
-
     }
 }
 
@@ -2945,7 +2944,6 @@ bool WorldObject::IsValidAttackTarget(WorldObject const* target, SpellInfo const
                         if (FactionState const* repState = player->GetReputationMgr().GetState(factionEntry))
                             if (!(repState->Flags & FACTION_FLAG_AT_WAR))
                                 return false;
-
             }
         }
     }

@@ -353,7 +353,6 @@ void TicketMgr::LoadTickets()
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} GM tickets in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
-
 }
 
 void TicketMgr::LoadSurveys()
@@ -366,7 +365,6 @@ void TicketMgr::LoadSurveys()
         _lastSurveyId = (*result)[0].GetUInt32();
 
     TC_LOG_INFO("server.loading", ">> Loaded GM Survey count from database in {} ms", GetMSTimeDiffToNow(oldMSTime));
-
 }
 
 void TicketMgr::AddTicket(GmTicket* ticket)

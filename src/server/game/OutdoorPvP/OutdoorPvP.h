@@ -86,7 +86,6 @@ struct GossipMenuItems;
 class TC_GAME_API OPvPCapturePoint
 {
     public:
-
         OPvPCapturePoint(OutdoorPvP* pvp);
 
         virtual ~OPvPCapturePoint() { }
@@ -137,7 +136,6 @@ class TC_GAME_API OPvPCapturePoint
         bool SetCapturePointData(uint32 entry, uint32 map, Position const& pos, QuaternionData const& rot);
 
     protected:
-
         bool AddObject(uint32 type, uint32 entry, uint32 map, Position const& pos, QuaternionData const& rot);
         bool AddCreature(uint32 type, uint32 entry, uint32 map, Position const& pos, TeamId teamId = TEAM_NEUTRAL, uint32 spawntimedelay = 0);
 
@@ -147,7 +145,6 @@ class TC_GAME_API OPvPCapturePoint
         bool DelCapturePoint();
 
     protected:
-
         // active players in the area of the objective, 0 - alliance, 1 - horde
         GuidSet m_activePlayers[2];
 
@@ -187,7 +184,6 @@ class TC_GAME_API OutdoorPvP : public ZoneScript
     friend class OutdoorPvPMgr;
 
     public:
-
         // ctor
         OutdoorPvP();
 
@@ -264,7 +260,6 @@ class TC_GAME_API OutdoorPvP : public ZoneScript
         Map* GetMap() const { return m_map; }
 
     protected:
-
         // the map of the objectives belonging to this outdoorpvp
         OPvPCapturePointMap m_capturePoints;
 

@@ -735,7 +735,6 @@ void PoolMgr::LoadFromDB()
             while (result->NextRow());
 
             TC_LOG_DEBUG("pool", "Pool handling system initialized, {} pools spawned in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
-
         }
     }
 }

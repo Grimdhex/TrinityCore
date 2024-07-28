@@ -547,7 +547,6 @@ ObjectGuid::LowType ChatHandler::extractLowGuidFromLink(char* text, HighGuid& gu
 
             ObjectGuid guid = sCharacterCache->GetCharacterGuidByName(name);
             return guid.GetCounter();
-
         }
         case GUID_LINK_CREATURE:
         {

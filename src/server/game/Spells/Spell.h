@@ -151,8 +151,8 @@ static const uint32 SPELL_INTERRUPT_NONPLAYER = 32747;
 class TC_GAME_API Spell
 {
     friend class SpellScript;
-    public:
 
+    public:
         void EffectNULL();
         void EffectUnused();
         void EffectDistract();

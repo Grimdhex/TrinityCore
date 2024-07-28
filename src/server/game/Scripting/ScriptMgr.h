@@ -172,27 +172,22 @@ class TC_GAME_API ScriptObject
     friend class ScriptMgr;
 
     public:
-
         std::string const& GetName() const;
 
     protected:
-
         ScriptObject(char const* name);
         virtual ~ScriptObject();
 
     private:
-
         std::string const _name;
 };
 
 class TC_GAME_API SpellScriptLoader : public ScriptObject
 {
     protected:
-
         explicit SpellScriptLoader(char const* name);
 
     public:
-
         // Should return a fully valid SpellScript pointer.
         virtual SpellScript* GetSpellScript() const;
 
@@ -203,11 +198,9 @@ class TC_GAME_API SpellScriptLoader : public ScriptObject
 class TC_GAME_API ServerScript : public ScriptObject
 {
     protected:
-
         explicit ServerScript(char const* name);
 
     public:
-
         // Called when reactive socket I/O is started (WorldTcpSessionMgr).
         virtual void OnNetworkStart();
 
@@ -233,11 +226,9 @@ class TC_GAME_API ServerScript : public ScriptObject
 class TC_GAME_API WorldScript : public ScriptObject
 {
     protected:
-
         explicit WorldScript(char const* name);
 
     public:
-
         // Called when the open/closed state of the world changes.
         virtual void OnOpenStateChange(bool open);
 
@@ -266,11 +257,9 @@ class TC_GAME_API WorldScript : public ScriptObject
 class TC_GAME_API FormulaScript : public ScriptObject
 {
     protected:
-
         explicit FormulaScript(char const* name);
 
     public:
-
         // Called after calculating honor.
         virtual void OnHonorCalculation(float& honor, uint8 level, float multiplier);
 
@@ -299,11 +288,9 @@ class TC_GAME_API MapScript
         MapEntry const* _mapEntry;
 
     protected:
-
         explicit MapScript(MapEntry const* mapEntry);
 
     public:
-
         // Gets the MapEntry structure associated with this script. Can return NULL.
         MapEntry const* GetEntry() const;
 
@@ -331,18 +318,15 @@ class TC_GAME_API MapScript
 class TC_GAME_API WorldMapScript : public ScriptObject, public MapScript<Map>
 {
     protected:
-
         explicit WorldMapScript(char const* name, uint32 mapId);
 };
 
 class TC_GAME_API InstanceMapScript : public ScriptObject, public MapScript<InstanceMap>
 {
     protected:
-
         explicit InstanceMapScript(char const* name, uint32 mapId);
 
     public:
-
         // Gets an InstanceScript object for this instance.
         virtual InstanceScript* GetInstanceScript(InstanceMap* map) const;
 };
@@ -350,18 +334,15 @@ class TC_GAME_API InstanceMapScript : public ScriptObject, public MapScript<Inst
 class TC_GAME_API BattlegroundMapScript : public ScriptObject, public MapScript<BattlegroundMap>
 {
     protected:
-
         explicit BattlegroundMapScript(char const* name, uint32 mapId);
 };
 
 class TC_GAME_API ItemScript : public ScriptObject
 {
     protected:
-
         explicit ItemScript(char const* name);
 
     public:
-
         // Called when a player accepts a quest from the item.
         virtual bool OnQuestAccept(Player* player, Item* item, Quest const* quest);
 
@@ -381,7 +362,6 @@ class TC_GAME_API ItemScript : public ScriptObject
 class TC_GAME_API UnitScript : public ScriptObject
 {
     protected:
-
         explicit UnitScript(char const* name);
 
     public:
@@ -404,7 +384,6 @@ class TC_GAME_API UnitScript : public ScriptObject
 class TC_GAME_API CreatureScript : public ScriptObject
 {
     protected:
-
         explicit CreatureScript(char const* name);
 
     public:
@@ -415,11 +394,9 @@ class TC_GAME_API CreatureScript : public ScriptObject
 class TC_GAME_API GameObjectScript : public ScriptObject
 {
     protected:
-
         explicit GameObjectScript(char const* name);
 
     public:
-
         // Called when a GameObjectAI object is needed for the gameobject.
         virtual GameObjectAI* GetAI(GameObject* go) const = 0;
 };
@@ -427,11 +404,9 @@ class TC_GAME_API GameObjectScript : public ScriptObject
 class TC_GAME_API AreaTriggerScript : public ScriptObject
 {
     protected:
-
         explicit AreaTriggerScript(char const* name);
 
     public:
-
         // Called when the area trigger is activated by a player.
         virtual bool OnTrigger(Player* player, AreaTriggerEntry const* trigger);
 };
@@ -453,22 +428,18 @@ class TC_GAME_API OnlyOnceAreaTriggerScript : public AreaTriggerScript
 class TC_GAME_API BattlefieldScript : public ScriptObject
 {
     protected:
-
         explicit BattlefieldScript(char const* name);
 
     public:
-
         virtual Battlefield* GetBattlefield() const = 0;
 };
 
 class TC_GAME_API BattlegroundScript : public ScriptObject
 {
     protected:
-
         explicit BattlegroundScript(char const* name);
 
     public:
-
         // Should return a fully valid Battleground object for the type ID.
         virtual Battleground* GetBattleground() const = 0;
 };
@@ -476,11 +447,9 @@ class TC_GAME_API BattlegroundScript : public ScriptObject
 class TC_GAME_API OutdoorPvPScript : public ScriptObject
 {
     protected:
-
         explicit OutdoorPvPScript(char const* name);
 
     public:
-
         // Should return a fully valid OutdoorPvP object for the type ID.
         virtual OutdoorPvP* GetOutdoorPvP() const = 0;
 };
@@ -488,11 +457,9 @@ class TC_GAME_API OutdoorPvPScript : public ScriptObject
 class TC_GAME_API CommandScript : public ScriptObject
 {
     protected:
-
         explicit CommandScript(char const* name);
 
     public:
-
         // Should return a pointer to a valid command table (ChatCommand array) to be used by ChatHandler.
         virtual std::vector<Trinity::ChatCommands::ChatCommandBuilder> GetCommands() const = 0;
 };
@@ -500,11 +467,9 @@ class TC_GAME_API CommandScript : public ScriptObject
 class TC_GAME_API WeatherScript : public ScriptObject
 {
     protected:
-
         explicit WeatherScript(char const* name);
 
     public:
-
         // Called when the weather changes in the zone this script is associated with.
         virtual void OnChange(Weather* weather, WeatherState state, float grade);
 
@@ -514,11 +479,9 @@ class TC_GAME_API WeatherScript : public ScriptObject
 class TC_GAME_API AuctionHouseScript : public ScriptObject
 {
     protected:
-
         explicit AuctionHouseScript(char const* name);
 
     public:
-
         // Called when an auction is added to an auction house.
         virtual void OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry);
 
@@ -535,11 +498,9 @@ class TC_GAME_API AuctionHouseScript : public ScriptObject
 class TC_GAME_API ConditionScript : public ScriptObject
 {
     protected:
-
         explicit ConditionScript(char const* name);
 
     public:
-
         // Called when a single condition is checked for a player.
         virtual bool OnConditionCheck(Condition const* condition, ConditionSourceInfo& sourceInfo);
 };
@@ -547,11 +508,9 @@ class TC_GAME_API ConditionScript : public ScriptObject
 class TC_GAME_API VehicleScript : public ScriptObject
 {
     protected:
-
         explicit VehicleScript(char const* name);
 
     public:
-
         // Called after a vehicle is installed.
         virtual void OnInstall(Vehicle* veh);
 
@@ -574,22 +533,18 @@ class TC_GAME_API VehicleScript : public ScriptObject
 class TC_GAME_API DynamicObjectScript : public ScriptObject
 {
     protected:
-
         explicit DynamicObjectScript(char const* name);
 
     public:
-
         virtual void OnUpdate(DynamicObject* obj, uint32 diff);
 };
 
 class TC_GAME_API TransportScript : public ScriptObject
 {
     protected:
-
         explicit TransportScript(char const* name);
 
     public:
-
         // Called when a player boards the transport.
         virtual void OnAddPassenger(Transport* transport, Player* player);
 
@@ -608,11 +563,9 @@ class TC_GAME_API TransportScript : public ScriptObject
 class TC_GAME_API AchievementCriteriaScript : public ScriptObject
 {
     protected:
-
         explicit AchievementCriteriaScript(char const* name);
 
     public:
-
         // Called when an additional criteria is checked.
         virtual bool OnCheck(Player* source, Unit* target) = 0;
 };
@@ -620,11 +573,9 @@ class TC_GAME_API AchievementCriteriaScript : public ScriptObject
 class TC_GAME_API PlayerScript : public ScriptObject
 {
     protected:
-
         explicit PlayerScript(char const* name);
 
     public:
-
         // Called when a player kills another player
         virtual void OnPVPKill(Player* killer, Player* killed);
 
@@ -727,11 +678,9 @@ class TC_GAME_API PlayerScript : public ScriptObject
 class TC_GAME_API AccountScript : public ScriptObject
 {
     protected:
-
         explicit AccountScript(char const* name);
 
     public:
-
         // Called when an account logged in succesfully
         virtual void OnAccountLogin(uint32 accountId);
 
@@ -754,11 +703,9 @@ class TC_GAME_API AccountScript : public ScriptObject
 class TC_GAME_API GuildScript : public ScriptObject
 {
     protected:
-
         explicit GuildScript(char const* name);
 
     public:
-
         // Called when a member is added to the guild.
         virtual void OnAddMember(Guild* guild, Player* player, uint8& plRank);
 
@@ -795,11 +742,9 @@ class TC_GAME_API GuildScript : public ScriptObject
 class TC_GAME_API GroupScript : public ScriptObject
 {
     protected:
-
         explicit GroupScript(char const* name);
 
     public:
-
         // Called when a member is added to a group.
         virtual void OnAddMember(Group* group, ObjectGuid guid);
 
@@ -832,6 +777,7 @@ class TC_GAME_API ScriptMgr
         void DecreaseScriptCount() { --_scriptCount; }
 
     public: /* Initialization */
+
         static ScriptMgr* instance();
 
         void Initialize();
@@ -848,6 +794,7 @@ class TC_GAME_API ScriptMgr
         }
 
     public: /* Script contexts */
+
         /// Set the current script context, which allows the ScriptMgr
         /// to accept new scripts in this context.
         /// Requires a SwapScriptContext() call afterwards to load the new scripts.

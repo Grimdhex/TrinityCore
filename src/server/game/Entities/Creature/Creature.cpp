@@ -2107,7 +2107,6 @@ void Creature::Respawn(bool force)
 
     TC_LOG_DEBUG("entities.unit", "Respawning creature {} ({})",
         GetName(), GetGUID().ToString());
-
 }
 
 void Creature::ForcedDespawn(uint32 timeMSToDespawn, Seconds forceRespawnTimer)

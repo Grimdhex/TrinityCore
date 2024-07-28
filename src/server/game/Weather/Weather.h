@@ -66,7 +66,6 @@ enum WeatherState : uint32
 class TC_GAME_API Weather
 {
     public:
-
         Weather(Map* map, uint32 zoneId, WeatherData const* weatherChances);
         ~Weather() { };
 
@@ -83,7 +82,6 @@ class TC_GAME_API Weather
         uint32 GetScriptId() const { return m_weatherChances->ScriptId; }
 
     private:
-
         WeatherState GetWeatherState() const;
         Map* m_map;
         uint32 m_zone;

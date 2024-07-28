@@ -1154,7 +1154,6 @@ void Item::DeleteRefundDataFromDB(CharacterDatabaseTransaction* trans)
         CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEM_REFUND_INSTANCE);
         stmt->setUInt32(0, GetGUID().GetCounter());
         (*trans)->Append(stmt);
-
     }
 }
 

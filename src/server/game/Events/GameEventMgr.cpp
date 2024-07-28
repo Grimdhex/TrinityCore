@@ -278,12 +278,10 @@ void GameEventMgr::LoadFromDB()
 
                 SetHolidayEventTime(pGameEvent);
             }
-
         }
         while (result->NextRow());
 
         TC_LOG_INFO("server.loading", ">> Loaded {} game events in {} ms.", count, GetMSTimeDiffToNow(oldMSTime));
-
     }
 
     TC_LOG_INFO("server.loading", "Loading Game Event Saves Data...");
@@ -326,7 +324,6 @@ void GameEventMgr::LoadFromDB()
             while (result->NextRow());
 
             TC_LOG_INFO("server.loading", ">> Loaded {} game event saves in game events in {} ms.", count, GetMSTimeDiffToNow(oldMSTime));
-
         }
     }
 
@@ -374,7 +371,6 @@ void GameEventMgr::LoadFromDB()
             while (result->NextRow());
 
             TC_LOG_INFO("server.loading", ">> Loaded {} game event prerequisites in game events in {} ms.", count, GetMSTimeDiffToNow(oldMSTime));
-
         }
     }
 
@@ -424,7 +420,6 @@ void GameEventMgr::LoadFromDB()
             while (result->NextRow());
 
             TC_LOG_INFO("server.loading", ">> Loaded {} creatures in game events in {} ms.", count, GetMSTimeDiffToNow(oldMSTime));
-
         }
     }
 
@@ -1065,7 +1060,6 @@ void GameEventMgr::StartArenaSeason()
 
     StartEvent(eventId, true);
     TC_LOG_INFO("gameevent", "Arena Season {} started...", season);
-
 }
 
 uint32 GameEventMgr::Update()                               // return the next event delay in ms

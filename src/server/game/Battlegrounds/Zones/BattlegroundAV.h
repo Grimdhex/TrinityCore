@@ -67,7 +67,6 @@ enum BG_AV_BroadcastTexts
 
 enum BG_AV_Sounds
 { /// @todo: get out if there comes a sound when neutral team captures mine
-
 /*
 8212:
     alliance grave assault

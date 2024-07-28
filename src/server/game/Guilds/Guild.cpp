@@ -2922,7 +2922,6 @@ void Guild::_SendBankList(WorldSession* session /* = nullptr*/, uint8 tabId /*= 
                     packet.ItemInfo.push_back(itemInfo);
                 }
             }
-
         };
 
         if (sendAllSlots)

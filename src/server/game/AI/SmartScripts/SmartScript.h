@@ -94,7 +94,6 @@ class TC_GAME_API SmartScript
         CounterMap mCounterList;
 
     private:
-
         void IncPhase(uint32 p);
         void DecPhase(uint32 p);
 

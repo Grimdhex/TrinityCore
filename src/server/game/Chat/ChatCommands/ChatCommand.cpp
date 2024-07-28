@@ -236,7 +236,6 @@ namespace Trinity::Impl::ChatCommands
             ChatHandler const& _handler;
             std::string_view const _token;
             ChatSubCommandMap::const_iterator _it, _end;
-
     };
 }
 

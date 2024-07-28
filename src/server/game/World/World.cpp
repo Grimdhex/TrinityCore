@@ -3092,7 +3092,6 @@ void World::UpdateSessions(uint32 diff)
             RemoveQueuedPlayer(pSession);
             m_sessions.erase(itr);
             delete pSession;
-
         }
     }
 }
@@ -3495,7 +3494,6 @@ void World::LoadWorldStates()
     while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} world states in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
-
 }
 
 bool World::IsPvPRealm() const

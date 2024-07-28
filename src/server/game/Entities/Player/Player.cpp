@@ -6139,7 +6139,6 @@ void Player::SendActionButtons(uint32 state) const
     }
 
     SendDirectMessage(&data);
-
 }
 
 bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type) const
@@ -13298,7 +13297,6 @@ void Player::RemoveItemFromBuyBackSlot(uint32 slot, bool del)
 
 void Player::SendEquipError(InventoryResult msg, Item* pItem, Item* pItem2, uint32 itemid) const
 {
-
     WorldPacket data(SMSG_INVENTORY_CHANGE_FAILURE, (22));
     data << uint8(msg);
 
@@ -15522,7 +15520,6 @@ bool Player::SatisfyQuestRace(Quest const* qInfo, bool msg) const
             SendCanTakeQuestResponse(INVALIDREASON_QUEST_FAILED_WRONG_RACE);
             TC_LOG_DEBUG("misc", "Player::SatisfyQuestRace: Sent INVALIDREASON_QUEST_FAILED_WRONG_RACE (QuestID: {}) because player '{}' ({}) doesn't have required race.",
                 qInfo->GetQuestId(), GetName(), GetGUID().ToString());
-
         }
         return false;
     }
@@ -18099,7 +18096,6 @@ void Player::_LoadInventory(PreparedQueryResult result, uint32 timeDiff)
                         delete item;
                         continue;
                     }
-
                 }
 
                 // Item's state may have changed after storing
@@ -19885,7 +19881,6 @@ void Player::_SaveQuestStatus(CharacterDatabaseTransaction trans)
             stmt->setUInt32(0, GetGUID().GetCounter());
             stmt->setUInt32(1, saveItr->first);
             trans->Append(stmt);
-
         }
         else if (saveItr->second == QUEST_FORCE_DELETE_SAVE_TYPE || !keepAbandoned)
         {
@@ -24808,7 +24803,6 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
         // LootItem is being removed (looted) from the container, delete it from the DB.
         if (loot->containerID > 0)
             sLootItemStorage->RemoveStoredLootItemForContainer(loot->containerID, item->itemid, item->count, item->itemIndex);
-
     }
     else
         SendEquipError(msg, nullptr, nullptr, item->itemid);
