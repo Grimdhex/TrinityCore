@@ -23,7 +23,6 @@
 #include "DatabaseEnv.h"
 #include "Errors.h"
 #include "Log.h"
-#include "SharedDefines.h"
 #include <functional>
 #include <unordered_map>
 

@@ -40,7 +40,6 @@
 #include "ProcessPriority.h"
 #include "RealmList.h"
 #include "SecretMgr.h"
-#include "SharedDefines.h"
 #include "Util.h"
 #include <boost/asio/signal_set.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
