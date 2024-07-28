@@ -76,7 +76,7 @@ namespace ScriptConverter {
         }
 
         static string GetMethod(string method, ref string txt, ref int minPos) {
-            string res;
+            string res = null;
             Regex r = new Regex(method + "(\\s|:|[(])");
             Match m = r.Match(txt);
 
