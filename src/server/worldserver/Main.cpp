@@ -128,7 +128,6 @@ variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, f
 /// Launch the Trinity server
 extern int main(int argc, char** argv)
 {
-    Trinity::Impl::CurrentServerProcessHolder::_type = SERVER_PROCESS_WORLDSERVER;
     signal(SIGABRT, &Trinity::AbortHandler);
 
     Trinity::VerifyOsVersion();
@@ -320,7 +319,7 @@ extern int main(int argc, char** argv)
     });
 
     // Initialize the World
-    sSecretMgr->Initialize();
+    sSecretMgr->Initialize(SECRET_OWNER_WORLDSERVER);
     sWorld->SetInitialWorldSettings();
 
     std::shared_ptr<void> mapManagementHandle(nullptr, [](void*)

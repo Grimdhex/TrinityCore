@@ -86,7 +86,6 @@ variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, f
 
 int main(int argc, char** argv)
 {
-    Trinity::Impl::CurrentServerProcessHolder::_type = SERVER_PROCESS_AUTHSERVER;
     signal(SIGABRT, &Trinity::AbortHandler);
 
     Trinity::VerifyOsVersion();
@@ -180,7 +179,7 @@ int main(int argc, char** argv)
     if (vm.count("update-databases-only"))
         return 0;
 
-    sSecretMgr->Initialize();
+    sSecretMgr->Initialize(SECRET_OWNER_AUTHSERVER);
 
     // Load IP Location Database
     sIPLocation->Load();
