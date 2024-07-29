@@ -28,6 +28,7 @@
 #include "ItemEnchantmentMgr.h"
 #include "MapReference.h"
 #include "PetDefines.h"
+#include "PlayerSettings.h"
 #include "PlayerTaxi.h"
 #include "QuestDef.h"
 #include <memory>
@@ -737,6 +738,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOAD_MONTHLY_QUEST_STATUS,
     PLAYER_LOGIN_QUERY_LOAD_CORPSE_LOCATION,
     PLAYER_LOGIN_QUERY_LOAD_PET_SLOTS,
+    PLAYER_LOGIN_QUERY_LOAD_CHARACTER_SETTINGS,
     MAX_PLAYER_LOGIN_QUERY
 };
 
@@ -2193,6 +2195,10 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
 
         std::string GetDebugInfo() const override;
 
+        // Character settings feature - Under AGLP3
+        [[nodiscard]] PlayerSetting GetPlayerSetting(std::string source, uint8 index);
+        void UpdatePlayerSetting(std::string source, uint8 index, uint32 value);
+
     protected:
         // Gamemaster whisper whitelist
         GuidList WhisperList;
@@ -2265,6 +2271,7 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
         void _LoadGlyphs(PreparedQueryResult result);
         void _LoadTalents(PreparedQueryResult result);
         void _LoadPetStable(uint8 petStableSlots, PreparedQueryResult result);
+        void _LoadCharacterSettings(PreparedQueryResult result);                    // Character settings feature - Under AGLP3
 
         /*********************************************************/
         /***                   SAVE SYSTEM                     ***/
@@ -2286,6 +2293,7 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
         void _SaveGlyphs(CharacterDatabaseTransaction trans) const;
         void _SaveTalents(CharacterDatabaseTransaction trans);
         void _SaveStats(CharacterDatabaseTransaction trans) const;
+        void _SavePlayerSettings(CharacterDatabaseTransaction trans);               // Character settings feature - Under AGLP3
 
         /*********************************************************/
         /***              ENVIRONMENTAL SYSTEM                 ***/
@@ -2516,6 +2524,8 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
         uint32 manaBeforeDuel;
 
         WorldLocation _corpseLocation;
+
+        PlayerSettingMap m_charSettingsMap;                                         // Character settings feature - Under AGLP3
 };
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);

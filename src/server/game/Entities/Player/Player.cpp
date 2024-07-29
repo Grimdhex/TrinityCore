@@ -4305,6 +4305,11 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
 
+            // Character settings feature - Under AGLP3
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_SETTINGS);
+            stmt->setUInt32(0, guid);
+            trans->Append(stmt);
+
             Corpse::DeleteFromDB(playerguid, trans);
             break;
         }
@@ -17760,6 +17765,9 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
 
     _LoadEquipmentSets(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_EQUIPMENT_SETS));
 
+    // Character settings feature - Under AGLP3
+    _LoadCharacterSettings(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_CHARACTER_SETTINGS));
+
     return true;
 }
 
@@ -19459,6 +19467,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
     GetSession()->SaveTutorialsData(trans);                 // changed only while character in game
     _SaveGlyphs(trans);
     GetSession()->SaveInstanceTimeRestrictions(trans);
+    _SavePlayerSettings(trans);                             // Character settings feature - Under AGLP3
 
     // check if stats should only be saved on logout
     // save stats can be out of transaction

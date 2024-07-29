@@ -510,6 +510,11 @@ enum CharacterDatabaseStatements : uint32
 
     CHAR_INS_DESERTER_TRACK,
 
+    // Character settings feature - Under AGLP3
+    CHAR_SEL_CHAR_SETTINGS,
+    CHAR_REP_CHAR_SETTINGS,
+    CHAR_DEL_CHAR_SETTINGS,
+
     MAX_CHARACTERDATABASE_STATEMENTS
 };
 
