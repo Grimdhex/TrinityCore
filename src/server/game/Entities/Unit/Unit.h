@@ -21,6 +21,7 @@
 #include "Object.h"
 #include "CombatManager.h"
 #include "SpellAuraDefines.h"
+#include "SpellDefines.h"
 #include "ThreatManager.h"
 #include "Timer.h"
 #include "UnitDefines.h"
@@ -1237,7 +1238,8 @@ class TC_GAME_API Unit : public WorldObject
         void RemoveAurasDueToItemSpell(uint32 spellId, ObjectGuid castItemGuid);
         void RemoveAurasByType(AuraType auraType, ObjectGuid casterGUID = ObjectGuid::Empty, Aura* except = nullptr, bool negative = true, bool positive = true);
         void RemoveNotOwnSingleTargetAuras(uint32 newPhase = 0x0);
-        void RemoveAurasWithInterruptFlags(uint32 flag, uint32 except = 0);
+        template <typename InterruptFlags>
+        void RemoveAurasWithInterruptFlags(InterruptFlags flag, uint32 except = 0);
         void RemoveAurasWithAttribute(uint32 flags);
         void RemoveAurasWithFamily(SpellFamilyNames family, uint32 familyFlag1, uint32 familyFlag2, uint32 familyFlag3, ObjectGuid casterGUID);
         void RemoveAurasWithMechanic(uint32 mechanicMaskToRemove, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, uint32 exceptSpellId = 0, bool withEffectMechanics = false);
@@ -1286,7 +1288,8 @@ class TC_GAME_API Unit : public WorldObject
         bool HasAuraTypeWithAffectMask(AuraType auraType, SpellInfo const* affectedSpell) const;
         bool HasAuraTypeWithValue(AuraType auraType, int32 value) const;
         bool HasAuraTypeWithTriggerSpell(AuraType auratype, uint32 triggerSpell) const;
-        bool HasNegativeAuraWithInterruptFlag(uint32 flag, ObjectGuid guid = ObjectGuid::Empty) const;
+        template <typename InterruptFlags>
+        bool HasNegativeAuraWithInterruptFlag(InterruptFlags flag, ObjectGuid guid = ObjectGuid::Empty) const;
         bool HasAuraWithMechanic(uint32 mechanicMask) const;
         bool HasStrongerAuraWithDR(SpellInfo const* auraSpellInfo, Unit* caster, bool triggered) const;
 
@@ -1450,8 +1453,8 @@ class TC_GAME_API Unit : public WorldObject
         void SetVisibleAura(uint8 slot, AuraApplication* aurApp);
         void RemoveVisibleAura(uint8 slot);
 
-        bool HasInterruptFlag(uint32 flags) const { return (m_interruptMask & flags) != 0; }
-        void AddInterruptMask(uint32 flags) { m_interruptMask |= flags; }
+        bool HasInterruptFlag(SpellAuraInterruptFlags flags) const { return m_interruptMask.HasFlag(flags); }
+        void AddInterruptMask(SpellAuraInterruptFlags flags) { m_interruptMask |= flags; }
         void UpdateInterruptMask();
 
         virtual float GetNativeObjectScale() const { return 1.0f; }
@@ -1748,7 +1751,7 @@ class TC_GAME_API Unit : public WorldObject
         AuraList m_scAuras;                        // cast singlecast auras
         AuraApplicationList m_interruptableAuras;  // auras which have interrupt mask applied on unit
         AuraStateAurasMap m_auraStateAuras;        // Used for improve performance of aura state checks on aura apply/remove
-        uint32 m_interruptMask;
+        EnumFlag<SpellAuraInterruptFlags> m_interruptMask;
 
         float m_auraFlatModifiersGroup[UNIT_MOD_END][MODIFIER_TYPE_FLAT_END];
         float m_auraPctModifiersGroup[UNIT_MOD_END][MODIFIER_TYPE_PCT_END];

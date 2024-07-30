@@ -356,7 +356,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recvData)
 
     // interrupt parachutes upon falling or landing in water
     if (opcode == MSG_MOVE_FALL_LAND || opcode == MSG_MOVE_START_SWIM)
-        mover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_LANDING); // Parachutes
+        mover->RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags::LandingOrFlight); // Parachutes
 
     /* process position-change */
     WorldPacket data(opcode, recvData.size());
@@ -387,7 +387,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recvData)
                 if (movementInfo.pos.GetOrientation() != mover->GetOrientation())
                 {
                     mover->SetOrientation(movementInfo.pos.GetOrientation());
-                    mover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TURNING);
+                    mover->RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags::Turning);
                 }
             }
         }

@@ -1789,7 +1789,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
                     InterruptNonMeleeSpells(true);
 
             //remove auras before removing from map...
-            RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CHANGE_MAP | AURA_INTERRUPT_FLAG_MOVE | AURA_INTERRUPT_FLAG_TURNING);
+            RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags::Moving | SpellAuraInterruptFlags::Turning);
 
             if (!GetSession()->PlayerLogout())
             {
@@ -2015,12 +2015,12 @@ void Player::RegenerateAll()
         for (auto itr = auraList.begin(); itr != auraList.end(); ++itr)
         {
             // Food emote comes above drinking emote if we have to decide (mage regen food for example)
-            if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_REGEN) && (*itr)->GetSpellInfo()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_NOT_SEATED)
+            if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_REGEN) && (*itr)->GetSpellInfo()->HasAuraInterruptFlag(SpellAuraInterruptFlags::Standing))
             {
                 SendPlaySpellVisual(SPELL_VISUAL_KIT_FOOD);
                 break;
             }
-            else if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_POWER_REGEN) && (*itr)->GetSpellInfo()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_NOT_SEATED)
+            else if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_POWER_REGEN) && (*itr)->GetSpellInfo()->HasAuraInterruptFlag(SpellAuraInterruptFlags::Standing))
             {
                 SendPlaySpellVisual(SPELL_VISUAL_KIT_DRINK);
                 break;
