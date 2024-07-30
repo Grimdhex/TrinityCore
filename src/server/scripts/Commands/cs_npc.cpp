@@ -105,6 +105,7 @@ public:
             { "follow stop",    HandleNpcUnFollowCommand,          rbac::RBAC_PERM_COMMAND_NPC_FOLLOW,         Console::No },
             { "evade",          HandleNpcEvadeCommand,             rbac::RBAC_PERM_COMMAND_NPC_EVADE,          Console::No },
             { "showloot",       HandleNpcShowLootCommand,          rbac::RBAC_PERM_COMMAND_NPC_SHOWLOOT,       Console::No },
+            { "guid",           HandleNpcGuidCommand,              rbac::RBAC_PERM_COMMAND_NPC_INFO,           Console::No },
         };
         static ChatCommandTable commandTable =
         {
@@ -452,6 +453,29 @@ public:
         creature->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, creature->GetFollowAngle());
 
         handler->PSendSysMessage(LANG_CREATURE_FOLLOW_YOU_NOW, creature->GetName().c_str());
+        return true;
+    }
+
+
+    static bool HandleNpcGuidCommand(ChatHandler* handler)
+    {
+        Creature* target = handler->getSelectedCreature();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_SELECT_CREATURE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 entry = target->GetEntry();
+        uint32 faction = target->GetFaction();
+        uint32 npcflags = target->GetNpcFlags();
+        uint32 displayid = target->GetDisplayId();
+        uint32 nativeid = target->GetNativeDisplayId();
+
+        handler->PSendSysMessage(LANG_NPCINFO_CHAR, target->GetName().c_str(), target->GetSpawnId(), target->GetGUID().GetCounter(), entry, faction, npcflags, displayid, nativeid);
+
         return true;
     }
 
