@@ -5923,7 +5923,6 @@ void ObjectMgr::LoadSpellScriptNames()
 
     do
     {
-
         Field* fields = result->Fetch();
 
         int32 spellId                = fields[0].GetInt32();

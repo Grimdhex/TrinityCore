@@ -645,7 +645,6 @@ public:
     {
         return new npc_earthmender_wildaAI(creature);
     }
-
 };
 
 /*#####

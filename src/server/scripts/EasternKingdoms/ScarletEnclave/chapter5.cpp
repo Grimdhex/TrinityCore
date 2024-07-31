@@ -1668,7 +1668,6 @@ public:
         void UpdateAI(uint32 /*diff*/) override { }
         void JustDied(Unit* /*killer*/) override { }
     };
-
 };
 
 void AddSC_the_scarlet_enclave_c5()

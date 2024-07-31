@@ -861,7 +861,6 @@ bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, 
                     TC_LOG_DEBUG("condition", "ConditionMgr::IsPlayerMeetToConditionList {} Reference template -{} not found",
                         condition->ToString(), condition->ReferenceId); // checked at loading, should never happen
                 }
-
             }
             else //handle normal condition
             {

@@ -265,7 +265,6 @@ struct boss_sindragosa : public BossAI
 
         if (Is25ManRaid() && me->HasAura(SPELL_SHADOWS_FATE))
             DoCastAOE(SPELL_FROST_INFUSION_CREDIT, true);
-
     }
 
     void JustEngagedWith(Unit* victim) override
@@ -313,7 +312,6 @@ struct boss_sindragosa : public BossAI
     {
         if (action == ACTION_START_FROSTWYRM)
         {
-
             instance->SetData(DATA_SINDRAGOSA_INTRO, 0);
             if (TempSummon* summon = me->ToTempSummon())
                 summon->SetTempSummonType(TEMPSUMMON_DEAD_DESPAWN);

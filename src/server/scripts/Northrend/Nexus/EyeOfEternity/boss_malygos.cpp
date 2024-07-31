@@ -1130,7 +1130,6 @@ struct npc_melee_hover_disk : public VehicleAI
         {
             if (unit->GetTypeId() != TYPEID_PLAYER)
             {
-
                 me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                 me->RemoveUnitFlag(UNIT_FLAG_UNINTERACTIBLE);
                 me->SetDisableGravity(false);

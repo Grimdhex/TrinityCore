@@ -937,7 +937,6 @@ public:
             }
         }
     };
-
 };
 
 // correct way: 52312 52314 52555 ...
@@ -964,7 +963,6 @@ public:
         npc_dkc1_gothikAI(Creature* creature) : ScriptedAI(creature) { }
 
         void MoveInLineOfSight(Unit* who) override
-
         {
             ScriptedAI::MoveInLineOfSight(who);
 
@@ -990,7 +988,6 @@ public:
             }
         }
     };
-
 };
 
 struct npc_scarlet_ghoul : public ScriptedAI

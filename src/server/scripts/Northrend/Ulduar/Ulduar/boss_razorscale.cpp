@@ -728,7 +728,6 @@ struct npc_expedition_commander : public ScriptedAI
 
     void BuildHarpoon(uint8 harpoonNumber)
     {
-
         if (_is25Man)
         {
             switch (harpoonNumber)

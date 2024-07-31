@@ -1391,7 +1391,6 @@ void ScriptMgr::OnGroupRateCalculation(float& rate, uint32 count, bool isRaid)
                 continue; \
             if (C->ID == V->GetId()) \
             {
-
 #define SCR_MAP_END \
                 return; \
             } \

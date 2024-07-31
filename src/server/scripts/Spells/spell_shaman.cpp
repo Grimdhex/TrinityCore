@@ -1156,7 +1156,6 @@ class spell_sha_lava_lash : public SpellScript
     {
         OnEffectHitTarget += SpellEffectFn(spell_sha_lava_lash::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
     }
-
 };
 
 // -324 - Lightning Shield
@@ -1250,7 +1249,6 @@ class spell_sha_mana_spring_totem : public SpellScript
     {
         OnEffectHitTarget += SpellEffectFn(spell_sha_mana_spring_totem::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
-
 };
 
 // 16191 - Mana Tide

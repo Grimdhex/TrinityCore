@@ -99,7 +99,6 @@ bool SpellMgr::IsSpellValid(SpellInfo const* spellInfo, Player* player, bool msg
                         }
                         return false;
                     }
-
                 }
                 // also possible IsLootCrafting case but fake items must exist anyway
                 else if (!sObjectMgr->GetItemTemplate(spellEffectInfo.ItemType))
@@ -781,7 +780,6 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
                 return bf->IsWarTime();
             break;
         }
-
     }
 
     return true;
@@ -1030,7 +1028,6 @@ void SpellMgr::LoadSpellRequired()
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} spell required records in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
-
 }
 
 void SpellMgr::LoadSpellLearnSkills()

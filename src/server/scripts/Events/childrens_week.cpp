@@ -240,7 +240,6 @@ class npc_winterfin_playmate : public CreatureScript
             int8 phase;
             ObjectGuid playerGUID;
             ObjectGuid orphanGUID;
-
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -441,7 +440,6 @@ class npc_the_biggest_tree : public CreatureScript
             uint8 phase;
             ObjectGuid playerGUID;
             ObjectGuid orphanGUID;
-
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -538,7 +536,6 @@ class npc_high_oracle_soo_roo : public CreatureScript
             int8 phase;
             ObjectGuid playerGUID;
             ObjectGuid orphanGUID;
-
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -633,7 +630,6 @@ class npc_elder_kekek : public CreatureScript
             int8 phase;
             ObjectGuid playerGUID;
             ObjectGuid orphanGUID;
-
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -924,7 +920,6 @@ class npc_alexstraza_the_lifebinder : public CreatureScript
                 uint32 timer;
                 ObjectGuid playerGUID;
                 ObjectGuid orphanGUID;
-
         };
 
         CreatureAI* GetAI(Creature* creature) const override

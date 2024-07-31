@@ -153,8 +153,7 @@ float AllianceOverrunWP[55][3]=//waypoints in the alliance base used in the end 
     {5313.22f, -2207.60f, 1290.06f}, //51 garg target2
     {5180.41f, -2121.87f, 1292.62f}, //52 garg target3
     {5088.68f, -2432.04f, 1441.73f}, //53 garg target4
-    {5111.26f, -2454.73f, 1449.63f}//54 garg target5
-
+    {5111.26f, -2454.73f, 1449.63f}  //54 garg target5
 };
 
 float HordeOverrunWP[21][3]=//waypoints in the horde base used in the end in the cleaning wave
@@ -179,7 +178,7 @@ float HordeOverrunWP[21][3]=//waypoints in the horde base used in the end in the
     {5472.08f, -2715.14f, 1483.55f},
     {5450.11f, -2721.47f, 1485.61f},
     {5433.25f, -2712.93f, 1493.02f}, //19 end 1
-    {5429.91f, -2718.44f, 1493.42f}//20 end 2
+    {5429.91f, -2718.44f, 1493.42f}  //20 end 2
 };
 
 hyjal_trashAI::hyjal_trashAI(Creature* creature) : EscortAI(creature)
@@ -637,7 +636,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_ghoul : public CreatureScript
@@ -740,7 +738,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_necromancer : public CreatureScript
@@ -876,7 +873,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_banshee : public CreatureScript
@@ -992,7 +988,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_crypt_fiend : public CreatureScript
@@ -1083,7 +1078,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_fel_stalker : public CreatureScript
@@ -1174,7 +1168,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_frost_wyrm : public CreatureScript
@@ -1252,7 +1245,6 @@ public:
             {
                 if (!go)
                 {
-
                     if (!useFlyPath)
                     {
                         for (uint8 i = 0; i < 3; ++i)
@@ -1517,7 +1509,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 void AddSC_hyjal_trash()

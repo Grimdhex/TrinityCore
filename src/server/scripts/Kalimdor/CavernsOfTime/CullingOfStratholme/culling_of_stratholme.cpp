@@ -974,7 +974,6 @@ enum CrateEvent3Misc
     CHAIN_MALCOLM4  = 4,
     CHAIN_SCRUFFY1  = 1,
     CHAIN_SCRUFFY2  = 2
-
 };
 
 static Position const malcolmSpawn = { 1605.2420f, 805.4160f, 122.9956f, 5.284148f };

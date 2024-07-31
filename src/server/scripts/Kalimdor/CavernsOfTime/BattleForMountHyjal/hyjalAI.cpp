@@ -499,7 +499,6 @@ void hyjalAI::SummonCreature(uint32 entry, float Base[4][3])
             default:
                 creature = me->SummonCreature(entry, SpawnLoc[0], SpawnLoc[1], SpawnLoc[2], 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 2min);
                 break;
-
     }
 
     if (creature)
@@ -734,7 +733,6 @@ void hyjalAI::UpdateAI(uint32 diff)
                     HideNearPos(5037.76f, -1889.71f);
                     for (uint8 i = 0; i < 92; ++i)//summon fires
                         me->SummonGameObject(GO_ROARING_FLAME, AllianceFirePos[i][0], AllianceFirePos[i][1], AllianceFirePos[i][2], AllianceFirePos[i][3], QuaternionData(AllianceFirePos[i][4], AllianceFirePos[i][5], AllianceFirePos[i][6], AllianceFirePos[i][7]), 0s);
-
                 }
                 else me->SetVisible(true);
                 break;
