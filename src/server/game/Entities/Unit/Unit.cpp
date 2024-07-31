@@ -753,12 +753,8 @@ bool Unit::HasBreakableByDamageCrowdControlAura(Unit* excludeCasterChannel) cons
             if (victim != attacker && victim->GetTypeId() == TYPEID_PLAYER)
             {
                 if (Spell* spell = victim->m_currentSpells[CURRENT_GENERIC_SPELL])
-                    if (spell->getState() == SPELL_STATE_PREPARING)
-                    {
-                        uint32 interruptFlags = spell->m_spellInfo->InterruptFlags;
-                        if ((interruptFlags & SPELL_INTERRUPT_FLAG_ABORT_ON_DMG) != 0)
+                    if (spell->getState() == SPELL_STATE_PREPARING && spell->m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::DamageAbsorb))
                             victim->InterruptNonMeleeSpells(false);
-                    }
             }
         }
 
@@ -941,8 +937,7 @@ bool Unit::HasBreakableByDamageCrowdControlAura(Unit* excludeCasterChannel) cons
                 {
                     if (spell->getState() == SPELL_STATE_PREPARING)
                     {
-                        uint32 interruptFlags = spell->m_spellInfo->InterruptFlags;
-                        if (interruptFlags & SPELL_INTERRUPT_FLAG_ABORT_ON_DMG)
+                        if (spell->m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::DamageAbsorb))
                             victim->InterruptNonMeleeSpells(false);
                         else
                             spell->Delayed();
@@ -3128,7 +3123,7 @@ bool Unit::IsMovementPreventedByCasting() const
 
     if (Spell* spell = m_currentSpells[CURRENT_GENERIC_SPELL])
         if (spell->getState() == SPELL_STATE_FINISHED ||
-            !(spell->m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_MOVEMENT))
+            !(spell->m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::Movement)))
             return false;
 
     // channeled spells during channel stage (after the initial cast timer) allow movement with a specific spell attribute

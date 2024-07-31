@@ -6393,7 +6393,7 @@ SpellCastResult Spell::CheckMovement() const
     if (getState() == SPELL_STATE_PREPARING)
     {
         if (m_casttime > 0)
-            if (m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_MOVEMENT)
+            if (m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::Movement))
                 return SPELL_FAILED_MOVING;
     }
     else if (getState() == SPELL_STATE_CASTING)
@@ -7185,7 +7185,7 @@ void Spell::Delayed() // only called in DealDamage()
         return;
 
     // spells not losing casting time
-    if (!(m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_PUSH_BACK))
+    if (!(m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::DamagePushback)))
         return;
 
     if (IsDelayableNoMore())                                 // Spells may only be delayed twice
@@ -7464,7 +7464,7 @@ bool Spell::IsChannelActive() const
 bool Spell::IsAutoActionResetSpell() const
 {
     /// @todo changed SPELL_INTERRUPT_FLAG_AUTOATTACK -> SPELL_INTERRUPT_FLAG_INTERRUPT to fix compile - is this check correct at all?
-    if (IsTriggered() || !(m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT))
+    if (IsTriggered() || !(m_spellInfo->InterruptFlags.HasFlag(SpellInterruptFlags::Interrupt)))
         return false;
 
     if (!m_casttime && m_spellInfo->HasAttribute(SPELL_ATTR6_NOT_RESET_SWING_IF_INSTANT))

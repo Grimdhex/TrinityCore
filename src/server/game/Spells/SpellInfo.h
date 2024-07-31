@@ -322,7 +322,7 @@ class TC_GAME_API SpellInfo
         uint32 CategoryRecoveryTime;
         uint32 StartRecoveryCategory;
         uint32 StartRecoveryTime;
-        uint32 InterruptFlags;
+        EnumFlag<SpellInterruptFlags> InterruptFlags = SpellInterruptFlags::None;
         EnumFlag<SpellAuraInterruptFlags> AuraInterruptFlags = SpellAuraInterruptFlags::None;
         EnumFlag<SpellAuraInterruptFlags> ChannelInterruptFlags = SpellAuraInterruptFlags::None;
         uint32 ProcFlags;

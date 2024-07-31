@@ -834,7 +834,7 @@ SpellInfo::SpellInfo(SpellEntry const* spellEntry)
     CategoryRecoveryTime = spellEntry->CategoryRecoveryTime;
     StartRecoveryCategory = spellEntry->StartRecoveryCategory;
     StartRecoveryTime = spellEntry->StartRecoveryTime;
-    InterruptFlags = spellEntry->InterruptFlags;
+    InterruptFlags = SpellInterruptFlags(spellEntry->InterruptFlags);
     AuraInterruptFlags = SpellAuraInterruptFlags(spellEntry->AuraInterruptFlags);
     ChannelInterruptFlags = SpellAuraInterruptFlags(spellEntry->ChannelInterruptFlags);
     ProcFlags = spellEntry->ProcTypeMask;
@@ -3119,7 +3119,7 @@ uint32 SpellInfo::GetMechanicImmunityMask(Unit* caster) const
     uint32 mechanicImmunityMask = 0;
 
     // @todo: research other interrupt flags
-    if (InterruptFlags & SPELL_INTERRUPT_FLAG_INTERRUPT)
+    if (InterruptFlags.HasFlag(SpellInterruptFlags::Interrupt))
     {
         if (casterMechanicImmunityMask & (1 << MECHANIC_SILENCE))
             mechanicImmunityMask |= (1 << MECHANIC_SILENCE);
