@@ -188,7 +188,6 @@ void TempSummon::InitStats(WorldObject* summoner, uint32 duration)
     {
         if (IsTrigger() && m_spells[0])
         {
-            //SetLevel(owner->GetLevel());
             m_ControlledByPlayer = true;
         }
     }
