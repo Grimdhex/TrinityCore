@@ -1495,7 +1495,7 @@ void Spell::DoCreateItem(uint32 itemId)
 
         // we succeeded in creating at least one item, so a levelup is possible
         if (bgType == 0)
-            player->UpdateCraftSkill(m_spellInfo->Id);
+            player->UpdateCraftSkill(m_spellInfo);
     }
 
 /*
@@ -1531,7 +1531,7 @@ void Spell::EffectCreateItem2()
     if (m_spellInfo->IsLootCrafting())
     {
         player->AutoStoreLoot(m_spellInfo->Id, LootTemplates_Spell, false, true);
-        player->UpdateCraftSkill(m_spellInfo->Id);
+        player->UpdateCraftSkill(m_spellInfo);
     }
     else // If there's no random loot entries for this spell, pick the item associated with this spell
     {
@@ -2554,7 +2554,7 @@ void Spell::EffectEnchantItemPerm()
     {
         // do not increase skill if vellum used
         if (!(m_CastItem && m_CastItem->GetTemplate()->HasFlag(ITEM_FLAG_NO_REAGENT_COST)))
-            player->UpdateCraftSkill(m_spellInfo->Id);
+            player->UpdateCraftSkill(m_spellInfo);
 
         uint32 enchant_id = effectInfo->MiscValue;
         if (!enchant_id)
@@ -3878,7 +3878,7 @@ void Spell::EffectDisEnchant()
 
     if (Player* caster = m_caster->ToPlayer())
     {
-        caster->UpdateCraftSkill(m_spellInfo->Id);
+        caster->UpdateCraftSkill(m_spellInfo);
         caster->SendLoot(itemTarget->GetGUID(), LOOT_DISENCHANTING);
     }
 
