@@ -140,6 +140,7 @@ public:
     void GetSinCos(float x, float y, float &vsin, float &vcos) const;
 
     constexpr bool IsInDist2d(float x, float y, float dist) const { return GetExactDist2dSq(x, y) < dist * dist; }
+    constexpr bool IsInDist2d(Position const& pos, float dist) const { return GetExactDist2dSq(pos) < dist * dist; }
     constexpr bool IsInDist2d(Position const* pos, float dist) const { return GetExactDist2dSq(pos) < dist * dist; }
 
     constexpr bool IsInDist(float x, float y, float z, float dist) const { return GetExactDistSq(x, y, z) < dist * dist; }
@@ -218,7 +219,7 @@ TC_GAME_API ByteBuffer& operator<<(ByteBuffer& buf, Position::ConstStreamer<Posi
 TC_GAME_API ByteBuffer& operator>>(ByteBuffer& buf, Position::Streamer<Position::XYZO> const& streamer);
 TC_GAME_API ByteBuffer& operator<<(ByteBuffer& buf, Position::ConstStreamer<Position::PackedXYZ> const& streamer);
 
-template <class Tag>
+template<class Tag>
 struct TaggedPosition
 {
     constexpr TaggedPosition() { }

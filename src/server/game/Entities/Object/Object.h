@@ -313,9 +313,9 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void GetNearPoint2D(WorldObject const* searcher, float& x, float& y, float distance, float absAngle) const;
         void GetNearPoint(WorldObject const* searcher, float& x, float& y, float& z, float distance2d, float absAngle) const;
         void GetClosePoint(float& x, float& y, float& z, float size, float distance2d = 0, float relAngle = 0) const;
-        void MovePosition(Position &pos, float dist, float angle);
+        void MovePosition(Position &pos, float dist, float angle) const;
         Position GetNearPosition(float dist, float angle);
-        void MovePositionToFirstCollision(Position &pos, float dist, float angle);
+        void MovePositionToFirstCollision(Position &pos, float dist, float angle) const;
         Position GetFirstCollisionPosition(float dist, float angle);
         Position GetRandomNearPosition(float radius);
         void GetContactPoint(WorldObject const* obj, float& x, float& y, float& z, float distance2d = CONTACT_DISTANCE) const;
@@ -493,6 +493,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void DestroyForNearbyPlayers();
         virtual void UpdateObjectVisibility(bool forced = true);
         virtual void UpdateObjectVisibilityOnCreate() { UpdateObjectVisibility(true); }
+        virtual void UpdateObjectVisibilityOnDestroy() { DestroyForNearbyPlayers(); }
         void UpdatePositionData();
 
         void BuildUpdate(UpdateDataMapType&) override;

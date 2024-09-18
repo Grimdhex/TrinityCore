@@ -92,6 +92,16 @@ struct MovementInfo
 
     void SetFallTime(uint32 val) { fallTime = val; }
 
+    void ResetTransport()
+    {
+        transport.Reset();
+    }
+
+    void ResetJump()
+    {
+        jump.Reset();
+    }
+
     void OutDebug();
 };
 
