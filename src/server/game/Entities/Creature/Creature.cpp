@@ -1182,6 +1182,40 @@ Unit* Creature::SelectVictim()
     return nullptr;
 }
 
+Creature* Creature::CreateCreature(uint32 entry, Map* map, uint32 phaseMask, Position const& pos, uint32 vehId /*= 0*/)
+{
+    CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate(entry);
+    if (!cInfo)
+        return nullptr;
+
+    ObjectGuid::LowType lowGuid;
+    if (vehId || cInfo->VehicleId)
+        lowGuid = map->GenerateLowGuid<HighGuid::Vehicle>();
+    else
+        lowGuid = map->GenerateLowGuid<HighGuid::Unit>();
+
+    Creature* creature = new Creature();
+    if (!creature->Create(lowGuid, map, phaseMask, entry, pos, nullptr, vehId))
+    {
+        delete creature;
+        return nullptr;
+    }
+
+    return creature;
+}
+
+Creature* Creature::CreateCreatureFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap /*= true*/, bool allowDuplicate /*= false*/)
+{
+    Creature* creature = new Creature();
+    if (!creature->LoadFromDB(spawnId, map, addToMap, allowDuplicate))
+    {
+        delete creature;
+        return nullptr;
+    }
+
+    return creature;
+}
+
 void Creature::InitializeReactState()
 {
     if (IsTotem() || IsTrigger() || IsCritter() || IsSpiritService())

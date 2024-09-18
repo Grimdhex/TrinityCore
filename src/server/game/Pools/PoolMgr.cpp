@@ -330,13 +330,7 @@ void PoolGroup<Creature>::Spawn1Object(PoolObject* obj)
         // We use spawn coords to spawn
         if (!map->Instanceable() && map->IsGridLoaded(data->spawnPoint))
         {
-            Creature* creature = new Creature();
-            //TC_LOG_DEBUG("pool", "Spawning creature {}", guid);
-            if (!creature->LoadFromDB(obj->guid, map, true, false))
-            {
-                delete creature;
-                return;
-            }
+            Creature::CreateCreatureFromDB(obj->guid, map);
         }
     }
 }

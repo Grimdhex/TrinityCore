@@ -2461,11 +2461,10 @@ ObjectGuid::LowType ObjectMgr::AddCreatureData(uint32 entry, uint32 mapId, Posit
     // We use spawn coords to spawn
     if (!map->Instanceable() && !map->IsRemovalGrid(data.spawnPoint))
     {
-        Creature* creature = new Creature();
-        if (!creature->LoadFromDB(spawnId, map, true, true))
+        Creature* creature = Creature::CreateCreatureFromDB(spawnId, map);
+        if (!creature)
         {
             TC_LOG_ERROR("misc", "AddCreature: Cannot add creature entry {} to map", entry);
-            delete creature;
             return 0;
         }
     }

@@ -1454,6 +1454,13 @@ Creature* Battleground::AddCreature(uint32 entry, uint32 type, float x, float y,
     if (!map)
         return nullptr;
 
+    if (!sObjectMgr->GetCreatureTemplate(entry))
+    {
+        TC_LOG_ERROR("bg.battleground", "Battleground::AddCreature: creature template (entry: {}) does not exist for BG (map: {}, instance id: {})!",
+            entry, m_MapId, m_InstanceID);
+        return nullptr;
+    }
+
     if (transport)
     {
         if (Creature* creature = transport->SummonPassenger(entry, { x, y, z, o }, TEMPSUMMON_MANUAL_DESPAWN))
@@ -1465,26 +1472,17 @@ Creature* Battleground::AddCreature(uint32 entry, uint32 type, float x, float y,
         return nullptr;
     }
 
-    Creature* creature = new Creature();
+    Position pos = { x, y, z, o };
 
-    if (!creature->Create(map->GenerateLowGuid<HighGuid::Unit>(), map, PHASEMASK_NORMAL, entry, { x, y, z, o }))
+    Creature* creature = Creature::CreateCreature(entry, map, PHASEMASK_NORMAL, pos);
+    if (!creature)
     {
         TC_LOG_ERROR("bg.battleground", "Battleground::AddCreature: cannot create creature (entry: {}) for BG (map: {}, instance id: {})!",
             entry, m_MapId, m_InstanceID);
-        delete creature;
         return nullptr;
     }
 
-    creature->SetHomePosition(x, y, z, o);
-
-    CreatureTemplate const* cinfo = sObjectMgr->GetCreatureTemplate(entry);
-    if (!cinfo)
-    {
-        TC_LOG_ERROR("bg.battleground", "Battleground::AddCreature: creature template (entry: {}) does not exist for BG (map: {}, instance id: {})!",
-            entry, m_MapId, m_InstanceID);
-        delete creature;
-        return nullptr;
-    }
+    creature->SetHomePosition(pos);
 
     if (!map->AddToMap(creature))
     {
