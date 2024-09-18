@@ -3372,7 +3372,7 @@ void Spell::EffectSummonObjectWild()
 
     uint32 gameobject_id = effectInfo->MiscValue;
 
-    GameObject* pGameObj = new GameObject();
+    GameObject* go = new GameObject();
 
     WorldObject* target = focusObject;
     if (!target)
@@ -3387,28 +3387,28 @@ void Spell::EffectSummonObjectWild()
     Map* map = target->GetMap();
 
     QuaternionData rot = QuaternionData::fromEulerAnglesZYX(target->GetOrientation(), 0.f, 0.f);
-    if (!pGameObj->Create(map->GenerateLowGuid<HighGuid::GameObject>(), gameobject_id, map, m_caster->GetPhaseMask(), Position(x, y, z, target->GetOrientation()), rot, 255, GO_STATE_READY))
+    if (!go->Create(map->GenerateLowGuid<HighGuid::GameObject>(), gameobject_id, map, m_caster->GetPhaseMask(), Position(x, y, z, target->GetOrientation()), rot, 255, GO_STATE_READY))
     {
-        delete pGameObj;
+        delete go;
         return;
     }
 
     int32 duration = m_spellInfo->GetDuration();
 
-    pGameObj->SetRespawnTime(duration > 0 ? duration/IN_MILLISECONDS : 0);
-    pGameObj->SetSpellId(m_spellInfo->Id);
+    go->SetRespawnTime(duration > 0 ? duration/IN_MILLISECONDS : 0);
+    go->SetSpellId(m_spellInfo->Id);
 
-    ExecuteLogEffectSummonObject(effectInfo->EffectIndex, pGameObj);
+    ExecuteLogEffectSummonObject(effectInfo->EffectIndex, go);
 
     // Wild object not have owner and check clickable by players
-    map->AddToMap(pGameObj);
+    map->AddToMap(go);
 
-    if (pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)
+    if (go->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)
         if (Player* player = m_caster->ToPlayer())
             if (Battleground* bg = player->GetBattleground())
-                bg->SetDroppedFlagGUID(pGameObj->GetGUID(), player->GetTeam() == ALLIANCE ? TEAM_HORDE: TEAM_ALLIANCE);
+                bg->SetDroppedFlagGUID(go->GetGUID(), player->GetTeam() == ALLIANCE ? TEAM_HORDE: TEAM_ALLIANCE);
 
-    if (GameObject* linkedTrap = pGameObj->GetLinkedTrap())
+    if (GameObject* linkedTrap = go->GetLinkedTrap())
     {
         linkedTrap->SetRespawnTime(duration > 0 ? duration / IN_MILLISECONDS : 0);
         linkedTrap->SetSpellId(m_spellInfo->Id);
