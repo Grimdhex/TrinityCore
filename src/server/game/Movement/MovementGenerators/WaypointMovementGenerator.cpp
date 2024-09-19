@@ -104,7 +104,7 @@ void WaypointMovementGenerator<Creature>::DoInitialize(Creature* owner)
     if (_loadedFromDB)
     {
         if (!_pathId)
-            _pathId = owner->GetWaypointPath();
+            _pathId = owner->GetWaypointPathId();
 
         _path = sWaypointMgr->GetPath(_pathId);
     }

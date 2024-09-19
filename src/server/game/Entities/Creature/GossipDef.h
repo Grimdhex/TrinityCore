@@ -162,6 +162,10 @@ class TC_GAME_API GossipMenu
 {
     public:
         GossipMenu();
+        GossipMenu(GossipMenu const&) = delete;
+        GossipMenu(GossipMenu&&) = delete;
+        GossipMenu& operator=(GossipMenu const&) = delete;
+        GossipMenu& operator=(GossipMenu&&) = delete;
         ~GossipMenu();
 
         uint32 AddMenuItem(int32 menuItemId, GossipOptionIcon icon, std::string const& message, uint32 sender, uint32 action, std::string const& boxMessage, uint32 boxMoney, bool coded = false);
@@ -176,15 +180,9 @@ class TC_GAME_API GossipMenu
 
         void AddGossipMenuItemData(uint32 menuItemId, uint32 gossipActionMenuId, uint32 gossipActionPoi);
 
-        uint32 GetMenuItemCount() const
-        {
-            return _menuItems.size();
-        }
+        uint32 GetMenuItemCount() const { return _menuItems.size(); }
 
-        bool Empty() const
-        {
-            return _menuItems.empty();
-        }
+        bool Empty() const { return _menuItems.empty(); }
 
         GossipMenuItem const* GetItem(uint32 id) const
         {
@@ -210,10 +208,7 @@ class TC_GAME_API GossipMenu
 
         void ClearMenu();
 
-        GossipMenuItemContainer const& GetMenuItems() const
-        {
-            return _menuItems;
-        }
+        GossipMenuItemContainer const& GetMenuItems() const { return _menuItems; }
 
     private:
         GossipMenuItemContainer _menuItems;
@@ -227,27 +222,22 @@ class TC_GAME_API QuestMenu
 {
     public:
         QuestMenu();
+        QuestMenu(QuestMenu const&) = delete;
+        QuestMenu(QuestMenu&&) = delete;
+        QuestMenu& operator=(QuestMenu const&) = delete;
+        QuestMenu& operator=(QuestMenu&&) = delete;
         ~QuestMenu();
 
         void AddMenuItem(uint32 QuestId, uint8 Icon);
         void ClearMenu();
 
-        uint8 GetMenuItemCount() const
-        {
-            return _questMenuItems.size();
-        }
+        uint8 GetMenuItemCount() const { return _questMenuItems.size(); }
 
-        bool Empty() const
-        {
-            return _questMenuItems.empty();
-        }
+        bool Empty() const { return _questMenuItems.empty(); }
 
         bool HasItem(uint32 questId) const;
 
-        QuestMenuItem const& GetItem(uint16 index) const
-        {
-            return _questMenuItems[index];
-        }
+        QuestMenuItem const& GetItem(uint16 index) const { return _questMenuItems[index]; }
 
     private:
         QuestMenuItemList _questMenuItems;
@@ -257,6 +247,10 @@ class TC_GAME_API PlayerMenu
 {
     public:
         explicit PlayerMenu(WorldSession* session);
+        PlayerMenu(PlayerMenu const&) = delete;
+        PlayerMenu(PlayerMenu&&) = delete;
+        PlayerMenu& operator=(PlayerMenu const&) = delete;
+        PlayerMenu& operator=(PlayerMenu&&) = delete;
         ~PlayerMenu();
 
         GossipMenu& GetGossipMenu() { return _gossipMenu; }

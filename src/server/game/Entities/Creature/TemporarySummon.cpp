@@ -29,7 +29,7 @@
 
 TempSummon::TempSummon(SummonPropertiesEntry const* properties, WorldObject* owner, bool isWorldObject) :
 Creature(isWorldObject), m_Properties(properties), m_type(TEMPSUMMON_MANUAL_DESPAWN),
-m_timer(0), m_lifetime(0), m_canFollowOwner(true), m_visibleBySummonerOnly(false)
+m_timer(0ms), m_lifetime(0ms), m_canFollowOwner(true), m_visibleBySummonerOnly(false)
 {
     if (owner)
         m_summonerGUID = owner->GetGUID();
@@ -37,9 +37,11 @@ m_timer(0), m_lifetime(0), m_canFollowOwner(true), m_visibleBySummonerOnly(false
     m_unitTypeMask |= UNIT_MASK_SUMMON;
 }
 
+TempSummon::~TempSummon() = default;
+
 WorldObject* TempSummon::GetSummoner() const
 {
-    return m_summonerGUID ? ObjectAccessor::GetWorldObject(*this, m_summonerGUID) : nullptr;
+    return !m_summonerGUID.IsEmpty() ? ObjectAccessor::GetWorldObject(*this, m_summonerGUID) : nullptr;
 }
 
 Unit* TempSummon::GetSummonerUnit() const
@@ -51,7 +53,7 @@ Unit* TempSummon::GetSummonerUnit() const
 
 Creature* TempSummon::GetSummonerCreatureBase() const
 {
-    return m_summonerGUID ? ObjectAccessor::GetCreature(*this, m_summonerGUID) : nullptr;
+    return !m_summonerGUID.IsEmpty() ? ObjectAccessor::GetCreature(*this, m_summonerGUID) : nullptr;
 }
 
 GameObject* TempSummon::GetSummonerGameObject() const
@@ -206,7 +208,7 @@ void TempSummon::InitStats(WorldObject* summoner, Milliseconds duration)
     {
         if (uint32 slot = m_Properties->Slot)
         {
-            if (unitSummoner->m_SummonSlot[slot] && unitSummoner->m_SummonSlot[slot] != GetGUID())
+            if (!unitSummoner->m_SummonSlot[slot].IsEmpty() && unitSummoner->m_SummonSlot[slot] != GetGUID())
             {
                 Creature* oldSummon = GetMap()->GetCreature(unitSummoner->m_SummonSlot[slot]);
                 if (oldSummon && oldSummon->IsSummon())
@@ -293,11 +295,11 @@ void TempSummon::RemoveFromWorld()
     if (!IsInWorld())
         return;
 
-    if (m_Properties)
-        if (uint32 slot = m_Properties->Slot)
-            if (Unit* owner = GetSummonerUnit())
-                if (owner->m_SummonSlot[slot] == GetGUID())
-                    owner->m_SummonSlot[slot].Clear();
+    if (m_Properties && m_Properties->Slot != 0)
+        if (Unit* owner = GetSummonerUnit())
+            for (ObjectGuid& summonSlot : owner->m_SummonSlot)
+                if (summonSlot == GetGUID())
+                    summonSlot.Clear();
 
     //if (GetOwnerGUID())
     //    TC_LOG_ERROR("entities.unit", "Unit {} has owner guid when removed from world", GetEntry());
@@ -321,6 +323,8 @@ Minion::Minion(SummonPropertiesEntry const* properties, Unit* owner, bool isWorl
     ASSERT(m_owner);
     m_unitTypeMask |= UNIT_MASK_MINION;
     m_followAngle = PET_FOLLOW_ANGLE;
+    /// @todo: Find correct way
+    InitCharmInfo();
 }
 
 void Minion::InitStats(WorldObject* summoner, Milliseconds duration)
@@ -433,7 +437,6 @@ Puppet::Puppet(SummonPropertiesEntry const* properties, Unit* owner)
 void Puppet::InitStats(WorldObject* summoner, Milliseconds duration)
 {
     Minion::InitStats(summoner, duration);
-    SetLevel(GetOwner()->GetLevel());
     SetReactState(REACT_PASSIVE);
 }
 

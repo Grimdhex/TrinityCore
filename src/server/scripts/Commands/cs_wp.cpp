@@ -98,7 +98,7 @@ public:
         if (!path_number)
         {
             if (target)
-                pathid = target->GetWaypointPath();
+                pathid = target->GetWaypointPathId();
             else
             {
                 WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_MAX_ID);
@@ -762,7 +762,7 @@ public:
                 return false;
             }
 
-            pathid = target->GetWaypointPath();
+            pathid = target->GetWaypointPathId();
         }
         else
         {

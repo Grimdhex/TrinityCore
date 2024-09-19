@@ -181,7 +181,7 @@ namespace Trinity
 
                 if (gain && creature)
                 {
-                    if (creature->isElite())
+                    if (creature->IsElite())
                     {
                         // Elites in instances have a 2.75x XP bonus instead of the regular 2x world bonus.
                         if (u->GetMap()->IsDungeon())

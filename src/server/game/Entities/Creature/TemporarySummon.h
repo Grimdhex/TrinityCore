@@ -36,7 +36,7 @@ class TC_GAME_API TempSummon : public Creature
 {
     public:
         explicit TempSummon(SummonPropertiesEntry const* properties, WorldObject* owner, bool isWorldObject);
-        virtual ~TempSummon() { }
+        virtual ~TempSummon();
         void Update(uint32 diff) override;
         virtual void InitStats(WorldObject* summoner, Milliseconds lifetime);
         virtual void InitSummon(WorldObject* summoner);
