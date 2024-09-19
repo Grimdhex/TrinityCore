@@ -1958,7 +1958,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
 
     summon->SetHomePosition(pos);
 
-    summon->InitStats(summoner, duration);
+    summon->InitStats(summoner, Milliseconds(duration));
 
     summon->SetVisibleBySummonerOnly(visibleBySummonerOnly);
 

@@ -20,6 +20,7 @@
 
 #include "Packet.h"
 #include "ObjectGuid.h"
+#include "PacketUtilities.h"
 
 namespace WorldPackets
 {
@@ -44,7 +45,7 @@ namespace WorldPackets
 
             uint8 Slot = 0;
             ObjectGuid Totem;
-            uint32 Duration = 0;
+            Duration<Milliseconds, uint32> Duration;
             uint32 SpellID = 0;
 
         };

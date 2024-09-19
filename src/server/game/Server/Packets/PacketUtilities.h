@@ -219,6 +219,52 @@ namespace WorldPackets
         arena_type _data;
         storage_type _storage;
     };
+
+    template<typename ChronoDuration, typename Underlying = int64>
+    class Duration
+    {
+    public:
+        Duration() = default;
+        Duration(ChronoDuration value) : _value(value) { }
+
+        Duration& operator=(ChronoDuration value)
+        {
+            _value = value;
+            return *this;
+        }
+
+        operator ChronoDuration() const
+        {
+            return _value;
+        }
+
+        friend ByteBuffer& operator<<(ByteBuffer& data, Duration duration)
+        {
+            data << static_cast<Underlying>(duration._value.count());
+            return data;
+        }
+
+        friend ByteBuffer& operator>>(ByteBuffer& data, Duration& duration)
+        {
+            duration._value = ChronoDuration(data.read<Underlying>());
+            return data;
+        }
+
+    private:
+        ChronoDuration _value = ChronoDuration::zero();
+    };
+
+    template<typename Underlying, typename T>
+    struct AsWriter
+    {
+        T const& Value;
+
+        friend inline ByteBuffer& operator<<(ByteBuffer& data, AsWriter const& opt)
+        {
+            data << Underlying(opt.Value);
+            return data;
+        }
+    };
 }
 
 #endif // PacketUtilities_h__

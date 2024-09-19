@@ -28,11 +28,11 @@
 Totem::Totem(SummonPropertiesEntry const* properties, Unit* owner) : Minion(properties, owner, false)
 {
     m_unitTypeMask |= UNIT_MASK_TOTEM;
-    m_duration = 0;
+    m_duration = 0ms;
     m_type = TOTEM_PASSIVE;
 }
 
-void Totem::Update(uint32 time)
+void Totem::Update(uint32 diff)
 {
     if (!GetOwner()->IsAlive() || !IsAlive())
     {
@@ -40,18 +40,18 @@ void Totem::Update(uint32 time)
         return;
     }
 
-    if (m_duration <= time)
+    if (m_duration <= Milliseconds(diff))
     {
         UnSummon();                                         // remove self
         return;
     }
-    else
-        m_duration -= time;
 
-    Creature::Update(time);
+    m_duration -= Milliseconds(diff);
+
+    Creature::Update(diff);
 }
 
-void Totem::InitStats(WorldObject* summoner, uint32 duration)
+void Totem::InitStats(WorldObject* summoner, Milliseconds duration)
 {
     // client requires SMSG_TOTEM_CREATED to be sent before adding to world and before removing old totem
     if (Player* owner = GetOwner()->ToPlayer())

@@ -20800,7 +20800,7 @@ void Player::VehicleSpellInitialize()
     WorldPacket data(SMSG_PET_SPELLS, 8 + 2 + 4 + 4 + 4 * 10 + 1 + 1 + cooldownCount * (4 + 2 + 4 + 4));
     data << uint64(vehicle->GetGUID());                     // Guid
     data << uint16(0);                                      // Pet Family (0 for all vehicles)
-    data << uint32(vehicle->IsSummon() ? vehicle->ToTempSummon()->GetTimer() : 0); // Duration
+    data << uint32(vehicle->IsSummon() ? vehicle->ToTempSummon()->GetTimer().count() : 0); // Duration
     // The following three segments are read by the client as one uint32
     data << uint8(vehicle->GetReactState());                // React State
     data << uint8(0);                                       // Command State
