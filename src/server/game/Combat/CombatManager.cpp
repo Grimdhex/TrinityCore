@@ -133,13 +133,13 @@ CombatManager::~CombatManager()
     ASSERT(_pvpRefs.empty(), "CombatManager::~CombatManager - %s: we still have %zu PvP combat references, one of them is with %s", _owner->GetGUID().ToString().c_str(), _pvpRefs.size(), _pvpRefs.begin()->first.ToString().c_str());
 }
 
-void CombatManager::Update(uint32 tdiff)
+void CombatManager::Update(uint32 diff)
 {
     auto it = _pvpRefs.begin(), end = _pvpRefs.end();
     while (it != end)
     {
         PvPCombatReference* const ref = it->second;
-        if (ref->first == _owner && !ref->Update(tdiff)) // only update if we're the first unit involved (otherwise double decrement)
+        if (ref->first == _owner && !ref->Update(diff)) // only update if we're the first unit involved (otherwise double decrement)
         {
             it = _pvpRefs.erase(it), end = _pvpRefs.end(); // remove it from our refs first to prevent invalidation
             ref->EndCombat(); // this will remove it from the other side

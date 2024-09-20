@@ -37,10 +37,10 @@ EventProcessor::~EventProcessor()
     KillAllEvents(true);
 }
 
-void EventProcessor::Update(uint32 p_time)
+void EventProcessor::Update(uint32 diff)
 {
     // update time
-    m_time += p_time;
+    m_time += diff;
 
     // main event loop
     std::multimap<uint64, BasicEvent*>::iterator i;
@@ -52,7 +52,7 @@ void EventProcessor::Update(uint32 p_time)
 
         if (event->IsRunning())
         {
-            if (event->Execute(m_time, p_time))
+            if (event->Execute(m_time, diff))
             {
                 // completely destroy event if it is not re-added
                 delete event;

@@ -96,7 +96,7 @@ class TC_COMMON_API EventProcessor
         EventProcessor() : m_time(0) { }
         ~EventProcessor();
 
-        void Update(uint32 p_time);
+        void Update(uint32 diff);
         void KillAllEvents(bool force);
 
         void AddEvent(BasicEvent* event, Milliseconds e_time, bool set_addtime = true);

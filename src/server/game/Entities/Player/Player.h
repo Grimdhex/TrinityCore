@@ -939,7 +939,7 @@ class TC_GAME_API Player final : public Unit, public GridObject<Player>
 
         bool Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo);
 
-        void Update(uint32 time) override;
+        void Update(uint32 diff) override;
 
         void Heartbeat() override;
 

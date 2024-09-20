@@ -213,17 +213,17 @@ void ThreatManager::Initialize()
     _ownerCanHaveThreatList = ThreatManager::CanHaveThreatList(_owner);
 }
 
-void ThreatManager::Update(uint32 tdiff)
+void ThreatManager::Update(uint32 diff)
 {
     if (!CanHaveThreatList() || IsThreatListEmpty(true))
         return;
-    if (_updateTimer <= tdiff)
+    if (_updateTimer <= diff)
     {
         UpdateVictim();
         _updateTimer = THREAT_UPDATE_INTERVAL;
     }
     else
-        _updateTimer -= tdiff;
+        _updateTimer -= diff;
 }
 
 Unit* ThreatManager::GetCurrentVictim()

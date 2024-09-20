@@ -87,12 +87,12 @@ struct DynTreeImpl : public ParentTree/*, public Intersectable*/
         unbalanced_times = 0;
     }
 
-    void update(uint32 difftime)
+    void update(uint32 diff)
     {
         if (empty())
             return;
 
-        rebalance_timer.Update(difftime);
+        rebalance_timer.Update(diff);
         if (rebalance_timer.Passed())
         {
             rebalance_timer.Reset(CHECK_TREE_PERIOD);
@@ -132,9 +132,9 @@ void DynamicMapTree::balance()
     impl->balance();
 }
 
-void DynamicMapTree::update(uint32 t_diff)
+void DynamicMapTree::update(uint32 diff)
 {
-    impl->update(t_diff);
+    impl->update(diff);
 }
 
 struct DynamicTreeIntersectionCallback

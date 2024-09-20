@@ -94,7 +94,7 @@ class TC_GAME_API ThreatManager
         void Initialize();
         // called from Creature::Update (only creatures can have their own threat list)
         // should not be called from anywhere else
-        void Update(uint32 tdiff);
+        void Update(uint32 diff);
 
         // never nullptr
         Unit* GetOwner() const { return _owner; }

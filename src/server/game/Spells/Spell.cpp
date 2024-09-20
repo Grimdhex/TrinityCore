@@ -3791,7 +3791,7 @@ void Spell::SendSpellCooldown()
     m_caster->ToUnit()->GetSpellHistory()->HandleCooldowns(m_spellInfo, m_CastItem, this);
 }
 
-void Spell::update(uint32 difftime)
+void Spell::update(uint32 diff)
 {
     // update pointers based at it's GUIDs
     if (!UpdatePointers())
@@ -3818,10 +3818,10 @@ void Spell::update(uint32 difftime)
         {
             if (m_timer > 0)
             {
-                if (difftime >= (uint32)m_timer)
+                if (diff >= (uint32)m_timer)
                     m_timer = 0;
                 else
-                    m_timer -= difftime;
+                    m_timer -= diff;
             }
 
             if (m_timer == 0 && !m_spellInfo->IsNextMeleeSwingSpell() && !IsAutoRepeat())
@@ -3847,10 +3847,10 @@ void Spell::update(uint32 difftime)
 
                 if (m_timer > 0)
                 {
-                    if (difftime >= (uint32)m_timer)
+                    if (diff >= (uint32)m_timer)
                         m_timer = 0;
                     else
-                        m_timer -= difftime;
+                        m_timer -= diff;
                 }
             }
 

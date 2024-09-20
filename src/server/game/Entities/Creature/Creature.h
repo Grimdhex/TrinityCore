@@ -87,7 +87,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         ObjectGuid::LowType GetSpawnId() const { return m_spawnId; }
 
-        void Update(uint32 time) override;                         // overwrited Unit::Update
+        void Update(uint32 diff) override;                         // overwrited Unit::Update
         void Heartbeat() override;
 
         void GetRespawnPosition(float &x, float &y, float &z, float* ori = nullptr, float* dist = nullptr) const;

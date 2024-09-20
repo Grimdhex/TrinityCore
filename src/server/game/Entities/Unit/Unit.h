@@ -701,7 +701,7 @@ class TC_GAME_API Unit : public WorldObject
         void ApplyDiminishingAura(DiminishingGroup group, bool apply);
         void ClearDiminishings();
 
-        virtual void Update(uint32 time) override;
+        virtual void Update(uint32 diff) override;
 
         void Heartbeat() override;
         void TriggerAuraHeartbeat();

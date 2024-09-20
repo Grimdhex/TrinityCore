@@ -62,7 +62,7 @@ class TC_GAME_API MapManager
         void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, WorldLocation const& loc) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, loc.GetMapId(), loc); }
 
         void Initialize(void);
-        void Update(uint32);
+        void Update(uint32 diff);
 
         void SetGridCleanUpDelay(uint32 t)
         {

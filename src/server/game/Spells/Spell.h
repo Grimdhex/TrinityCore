@@ -313,7 +313,7 @@ class TC_GAME_API Spell
 
         SpellCastResult prepare(SpellCastTargets const& targets, AuraEffect const* triggeredByAura = nullptr);
         void cancel(SpellCastResult result = SPELL_FAILED_INTERRUPTED, Optional<SpellCastResult> resultOther = {});
-        void update(uint32 difftime);
+        void update(uint32 diff);
         void cast(bool skipCheck = false);
         void finish(bool ok = true);
         void TakePower();

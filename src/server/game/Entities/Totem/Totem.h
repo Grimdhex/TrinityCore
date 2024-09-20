@@ -40,7 +40,7 @@ class TC_GAME_API Totem final : public Minion
     public:
         Totem(SummonPropertiesEntry const* properties, Unit* owner);
         virtual ~Totem() { }
-        void Update(uint32 time) override;
+        void Update(uint32 diff) override;
         void InitStats(WorldObject* summoner, Milliseconds duration) override;
         void InitSummon(WorldObject* summoner) override;
         void UnSummon(uint32 msTime = 0) override;

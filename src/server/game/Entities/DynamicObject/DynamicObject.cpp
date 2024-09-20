@@ -134,7 +134,7 @@ bool DynamicObject::CreateDynamicObject(ObjectGuid::LowType guidlow, Unit* caste
     return true;
 }
 
-void DynamicObject::Update(uint32 p_time)
+void DynamicObject::Update(uint32 diff)
 {
     // caster has to be always available and in the same map
     ASSERT(_caster);
@@ -145,7 +145,7 @@ void DynamicObject::Update(uint32 p_time)
     if (_aura)
     {
         if (!_aura->IsRemoved())
-            _aura->UpdateOwner(p_time, this);
+            _aura->UpdateOwner(diff, this);
 
         // _aura may be set to null in Aura::UpdateOwner call
         if (_aura && (_aura->IsRemoved() || _aura->IsExpired()))
@@ -153,8 +153,8 @@ void DynamicObject::Update(uint32 p_time)
     }
     else
     {
-        if (GetDuration() > int32(p_time))
-            _duration -= p_time;
+        if (GetDuration() > int32(diff))
+            _duration -= diff;
         else
             expired = true;
     }
@@ -162,7 +162,7 @@ void DynamicObject::Update(uint32 p_time)
     if (expired)
         Remove();
     else
-        sScriptMgr->OnDynamicObjectUpdate(this, p_time);
+        sScriptMgr->OnDynamicObjectUpdate(this, diff);
 }
 
 void DynamicObject::Remove()

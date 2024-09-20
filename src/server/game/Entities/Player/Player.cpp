@@ -974,7 +974,7 @@ void Player::UpdateInvisibilityDrunkDetect()
         UpdateObjectVisibility();
 }
 
-void Player::Update(uint32 p_time)
+void Player::Update(uint32 diff)
 {
     if (!IsInWorld())
         return;
@@ -990,23 +990,23 @@ void Player::Update(uint32 p_time)
     }
 
     // Update cinematic location, if 500ms have passed and we're doing a cinematic now.
-    _cinematicMgr->m_cinematicDiff += p_time;
+    _cinematicMgr->m_cinematicDiff += diff;
     if (_cinematicMgr->m_cinematicCamera && _cinematicMgr->m_activeCinematicCameraId && GetMSTimeDiffToNow(_cinematicMgr->m_lastCinematicCheck) > CINEMATIC_UPDATEDIFF)
     {
         _cinematicMgr->m_lastCinematicCheck = GameTime::GetGameTimeMS();
-        _cinematicMgr->UpdateCinematicLocation(p_time);
+        _cinematicMgr->UpdateCinematicLocation(diff);
     }
 
     //used to implement delayed far teleports
     SetCanDelayTeleport(true);
-    Unit::Update(p_time);
+    Unit::Update(diff);
     SetCanDelayTeleport(false);
 
     time_t now = GameTime::GetGameTime();
 
     UpdatePvPFlag(now);
 
-    UpdateContestedPvP(p_time);
+    UpdateContestedPvP(diff);
 
     UpdateDuelFlag(now);
 
@@ -1014,7 +1014,7 @@ void Player::Update(uint32 p_time)
 
     UpdateAfkReport(now);
 
-    Unit::AIUpdateTick(p_time);
+    Unit::AIUpdateTick(diff);
 
     // Once per second, update items that have just a limited lifetime
     if (now > m_Last_tick)
@@ -1041,7 +1041,7 @@ void Player::Update(uint32 p_time)
         while (iter != m_timedquests.end())
         {
             QuestStatusData& q_status = m_QuestStatus[*iter];
-            if (q_status.Timer <= p_time)
+            if (q_status.Timer <= diff)
             {
                 uint32 quest_id  = *iter;
                 ++iter;                                     // current iter will be removed in FailQuest
@@ -1049,14 +1049,14 @@ void Player::Update(uint32 p_time)
             }
             else
             {
-                q_status.Timer -= p_time;
+                q_status.Timer -= diff;
                 m_QuestStatusSave[*iter] = QUEST_DEFAULT_SAVE_TYPE;
                 ++iter;
             }
         }
     }
 
-    m_achievementMgr->UpdateTimedAchievements(p_time);
+    m_achievementMgr->UpdateTimedAchievements(diff);
 
     if (HasUnitState(UNIT_STATE_MELEE_ATTACKING) && !HasUnitState(UNIT_STATE_CASTING | UNIT_STATE_CHARGING))
     {
@@ -1151,15 +1151,15 @@ void Player::Update(uint32 p_time)
 
     if (m_weaponChangeTimer > 0)
     {
-        if (p_time >= m_weaponChangeTimer)
+        if (diff >= m_weaponChangeTimer)
             m_weaponChangeTimer = 0;
         else
-            m_weaponChangeTimer -= p_time;
+            m_weaponChangeTimer -= diff;
     }
 
     if (m_zoneUpdateTimer > 0)
     {
-        if (p_time >= m_zoneUpdateTimer)
+        if (diff >= m_zoneUpdateTimer)
         {
             // On zone update tick check if we are still in an inn if we are supposed to be in one
             if (HasRestFlag(REST_FLAG_IN_TAVERN))
@@ -1185,12 +1185,12 @@ void Player::Update(uint32 p_time)
             }
         }
         else
-            m_zoneUpdateTimer -= p_time;
+            m_zoneUpdateTimer -= diff;
     }
 
     if (IsAlive())
     {
-        m_regenTimer += p_time;
+        m_regenTimer += diff;
         RegenerateAll();
     }
 
@@ -1199,18 +1199,18 @@ void Player::Update(uint32 p_time)
 
     if (m_nextSave > 0)
     {
-        if (p_time >= m_nextSave)
+        if (diff >= m_nextSave)
         {
             // m_nextSave reset in SaveToDB call
             SaveToDB();
             TC_LOG_DEBUG("entities.player", "Player::Update: Player '{}' ({}) saved", GetName(), GetGUID().ToString());
         }
         else
-            m_nextSave -= p_time;
+            m_nextSave -= diff;
     }
 
     //Handle Water/drowning
-    HandleDrowning(p_time);
+    HandleDrowning(diff);
 
     // Played time
     if (now > m_Last_tick)
@@ -1223,14 +1223,14 @@ void Player::Update(uint32 p_time)
 
     if (GetDrunkValue())
     {
-        m_drunkTimer += p_time;
+        m_drunkTimer += diff;
         if (m_drunkTimer > 9 * IN_MILLISECONDS)
             HandleSobering();
     }
 
     if (HasPendingBind())
     {
-        if (_pendingBindTimer <= p_time)
+        if (_pendingBindTimer <= diff)
         {
             // Player left the instance
             if (_pendingBindId == GetInstanceId())
@@ -1238,24 +1238,24 @@ void Player::Update(uint32 p_time)
             SetPendingBind(0, 0);
         }
         else
-            _pendingBindTimer -= p_time;
+            _pendingBindTimer -= diff;
     }
 
     // not auto-free ghost from body in instances or if its affected by risen ally
     if (m_deathTimer > 0 && !GetMap()->Instanceable() && !HasAuraType(SPELL_AURA_PREVENT_RESURRECTION) && !IsGhouled())
     {
-        if (p_time >= m_deathTimer)
+        if (diff >= m_deathTimer)
         {
             m_deathTimer = 0;
             BuildPlayerRepop();
             RepopAtGraveyard();
         }
         else
-            m_deathTimer -= p_time;
+            m_deathTimer -= diff;
     }
 
-    UpdateEnchantTime(p_time);
-    UpdateHomebindTime(p_time);
+    UpdateEnchantTime(diff);
+    UpdateHomebindTime(diff);
 
     if (GetClass() == CLASS_DEATH_KNIGHT)
     {
@@ -1271,7 +1271,7 @@ void Player::Update(uint32 p_time)
             // Timer has began
             if (timer < 0xFFFFFFFF)
             {
-                timer += p_time;
+                timer += diff;
                 SetRuneTimer(i, std::min(uint32(2500), timer));
             }
         }
@@ -1284,14 +1284,14 @@ void Player::Update(uint32 p_time)
 
     if (IsAlive())
     {
-        if (m_hostileReferenceCheckTimer <= p_time)
+        if (m_hostileReferenceCheckTimer <= diff)
         {
             m_hostileReferenceCheckTimer = 15 * IN_MILLISECONDS;
             if (!GetMap()->IsDungeon())
                 GetCombatManager().EndCombatBeyondRange(GetVisibilityRange(), true);
         }
         else
-            m_hostileReferenceCheckTimer -= p_time;
+            m_hostileReferenceCheckTimer -= diff;
     }
 
     //we should execute delayed teleports only for alive(!) players

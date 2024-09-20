@@ -415,25 +415,25 @@ Unit::~Unit()
     ASSERT(!_gameClientMovingMe || _gameClientMovingMe->GetBasePlayer() == this);
 }
 
-void Unit::Update(uint32 p_time)
+void Unit::Update(uint32 diff)
 {
     // WARNING! Order of execution here is important, do not change.
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
-    WorldObject::Update(p_time);
+    WorldObject::Update(diff);
 
     CheckPendingMovementAcks();
 
     if (!IsInWorld())
         return;
 
-    _UpdateSpells(p_time);
+    _UpdateSpells(diff);
 
     // If this is set during update SetCantProc(false) call is missing somewhere in the code
     // Having this would prevent spells from being proced, so let's crash
     ASSERT(!m_procDeep);
 
-    m_combatManager.Update(p_time);
+    m_combatManager.Update(diff);
 
     _lastDamagedTargetGuid = ObjectGuid::Empty;
     if (_lastExtraAttackSpell)
@@ -452,14 +452,14 @@ void Unit::Update(uint32 p_time)
 
     // not implemented before 3.0.2
     if (uint32 base_att = getAttackTimer(BASE_ATTACK))
-        setAttackTimer(BASE_ATTACK, (p_time >= base_att ? 0 : base_att - p_time));
+        setAttackTimer(BASE_ATTACK, (diff >= base_att ? 0 : base_att - diff));
     if (uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
-        setAttackTimer(RANGED_ATTACK, (p_time >= ranged_att ? 0 : ranged_att - p_time));
+        setAttackTimer(RANGED_ATTACK, (diff >= ranged_att ? 0 : ranged_att - diff));
     if (uint32 off_att = getAttackTimer(OFF_ATTACK))
-        setAttackTimer(OFF_ATTACK, (p_time >= off_att ? 0 : off_att - p_time));
+        setAttackTimer(OFF_ATTACK, (diff >= off_att ? 0 : off_att - diff));
 
     // update abilities available only for fraction of time
-    UpdateReactives(p_time);
+    UpdateReactives(diff);
 
     if (IsAlive())
     {
@@ -468,8 +468,8 @@ void Unit::Update(uint32 p_time)
         ModifyAuraState(AURA_STATE_HEALTH_ABOVE_75_PERCENT, HealthAbovePct(75));
     }
 
-    UpdateSplineMovement(p_time);
-    i_motionMaster->Update(p_time);
+    UpdateSplineMovement(diff);
+    i_motionMaster->Update(diff);
 
     // Wait with the aura interrupts until we have updated our movement generators and position
     if (GetTypeId() == TYPEID_PLAYER)

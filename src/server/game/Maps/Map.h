@@ -350,7 +350,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         template<class T> void RemoveFromMap(T *, bool);
 
         void VisitNearbyCellsOf(WorldObject* obj, TypeContainerVisitor<Trinity::ObjectUpdater, GridTypeMapContainer> &gridVisitor, TypeContainerVisitor<Trinity::ObjectUpdater, WorldTypeMapContainer> &worldVisitor);
-        virtual void Update(uint32);
+        virtual void Update(uint32 diff);
 
         float GetVisibilityRange() const { return m_VisibleDistance; }
         //function for setting up visibility distance for maps on per-type/per-Id basis
@@ -922,7 +922,7 @@ class TC_GAME_API InstanceMap : public Map
         ~InstanceMap();
         bool AddPlayerToMap(Player*) override;
         void RemovePlayerFromMap(Player*, bool) override;
-        void Update(uint32) override;
+        void Update(uint32 diff) override;
         void CreateInstanceData(bool load);
         bool Reset(uint8 method);
         uint32 GetScriptId() const { return i_script_id; }

@@ -759,35 +759,35 @@ void Map::UpdatePlayerZoneStats(uint32 oldZone, uint32 newZone)
     ++_zonePlayerCountMap[newZone];
 }
 
-void Map::Update(uint32 t_diff)
+void Map::Update(uint32 diff)
 {
-    _dynamicTree.update(t_diff);
+    _dynamicTree.update(diff);
     /// update worldsessions for existing players
     for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
     {
         Player* player = m_mapRefIter->GetSource();
         if (player && player->IsInWorld())
         {
-            //player->Update(t_diff);
+            //player->Update(diff);
             WorldSession* session = player->GetSession();
             MapSessionFilter updater(session);
-            session->Update(t_diff, updater);
+            session->Update(diff, updater);
         }
     }
 
     /// process any due respawns
-    if (_respawnCheckTimer <= t_diff)
+    if (_respawnCheckTimer <= diff)
     {
         ProcessRespawns();
         _respawnCheckTimer = sWorld->getIntConfig(CONFIG_RESPAWN_MINCHECKINTERVALMS);
     }
     else
-        _respawnCheckTimer -= t_diff;
+        _respawnCheckTimer -= diff;
 
     /// update active cells around players and active objects
     resetMarkedCells();
 
-    Trinity::ObjectUpdater updater(t_diff);
+    Trinity::ObjectUpdater updater(diff);
     // for creature
     TypeContainerVisitor<Trinity::ObjectUpdater, GridTypeMapContainer  > grid_object_update(updater);
     // for pets
@@ -803,7 +803,7 @@ void Map::Update(uint32 t_diff)
             continue;
 
         // update players at tick
-        player->Update(t_diff);
+        player->Update(diff);
 
         VisitNearbyCellsOf(player, grid_object_update, world_object_update);
 
@@ -870,7 +870,7 @@ void Map::Update(uint32 t_diff)
         if (!obj->IsInWorld())
             continue;
 
-        obj->Update(t_diff);
+        obj->Update(diff);
     }
 
     SendObjectUpdates();
@@ -883,7 +883,7 @@ void Map::Update(uint32 t_diff)
         i_scriptLock = false;
     }
 
-    _weatherUpdateTimer.Update(t_diff);
+    _weatherUpdateTimer.Update(diff);
     if (_weatherUpdateTimer.Passed())
     {
         for (auto&& zoneInfo : _zoneDynamicInfo)
@@ -897,9 +897,9 @@ void Map::Update(uint32 t_diff)
     MoveAllGameObjectsInMoveList();
 
     if (!m_mapRefManager.isEmpty() || !m_activeNonPlayers.empty())
-        ProcessRelocationNotifies(t_diff);
+        ProcessRelocationNotifies(diff);
 
-    sScriptMgr->OnMapUpdate(this, t_diff);
+    sScriptMgr->OnMapUpdate(this, diff);
 
     TC_METRIC_VALUE("map_creatures", uint64(GetObjectsStore().Size<Creature>()),
         TC_METRIC_TAG("map_id", std::to_string(GetId())),
@@ -4006,12 +4006,12 @@ bool InstanceMap::AddPlayerToMap(Player* player)
     return true;
 }
 
-void InstanceMap::Update(uint32 t_diff)
+void InstanceMap::Update(uint32 diff)
 {
-    Map::Update(t_diff);
+    Map::Update(diff);
 
     if (i_data)
-        i_data->Update(t_diff);
+        i_data->Update(diff);
 }
 
 void InstanceMap::RemovePlayerFromMap(Player* player, bool remove)

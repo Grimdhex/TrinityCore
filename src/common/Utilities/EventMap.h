@@ -64,9 +64,9 @@ public:
     * @brief Updates the timer of the event map.
     * @param time Value in ms to be added to time.
     */
-    void Update(uint32 time)
+    void Update(uint32 diff)
     {
-        Update(Milliseconds(time));
+        Update(Milliseconds(diff));
     }
 
     /**

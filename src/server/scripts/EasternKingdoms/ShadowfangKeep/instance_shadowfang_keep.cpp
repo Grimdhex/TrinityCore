@@ -245,7 +245,7 @@ public:
             OUT_LOAD_INST_DATA_COMPLETE;
         }
 
-        void Update(uint32 uiDiff) override
+        void Update(uint32 diff) override
         {
             if (GetData(TYPE_FENRUS) != DONE)
                 return;
@@ -257,7 +257,7 @@ public:
 
             if (uiPhase)
             {
-                if (uiTimer <= uiDiff)
+                if (uiTimer <= diff)
                 {
                     switch (uiPhase)
                     {
@@ -283,7 +283,7 @@ public:
                         }
 
                     }
-                } else uiTimer -= uiDiff;
+                } else uiTimer -= diff;
             }
         }
 
