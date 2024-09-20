@@ -100,7 +100,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         static GameObject* CreateGameObject(uint32 entry, Map* map, uint32 phaseMask, Position const& pos, QuaternionData const& rotation, uint32 animProgress, GOState goState, uint32 artKit = 0);
         static GameObject* CreateGameObjectFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap = true);
 
-        void Init(GameObjectTemplate const* goInfo, GameObjectTemplateAddon const* goTemplateAddon, GameObjectData const* goData, ObjectGuid::LowType spawnid, Map* map, uint32 phaseMask, Position const& pos, QuaternionData const& rotation, uint32 animprogress, GOState go_state, uint32 artKit = 0, bool dynamic = false); void Update(uint32 p_time) override;
+        void Update(uint32 p_time) override;
         GameObjectTemplate const* GetGOInfo() const { return m_goInfo; }
         GameObjectTemplateAddon const* GetTemplateAddon() const { return m_goTemplateAddon; }
         GameObjectOverride const* GetGameObjectOverride() const;
