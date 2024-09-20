@@ -348,17 +348,13 @@ void PoolGroup<GameObject>::Spawn1Object(PoolObject* obj)
         // We use current coords to unspawn, not spawn coords since creature can have changed grid
         if (!map->Instanceable() && map->IsGridLoaded(data->spawnPoint))
         {
-            GameObject* pGameobject = new GameObject;
-            //TC_LOG_DEBUG("pool", "Spawning gameobject {}", guid);
-            if (!pGameobject->LoadFromDB(obj->guid, map, false))
+            if (GameObject* go = GameObject::CreateGameObjectFromDB(obj->guid, map, false))
             {
-                delete pGameobject;
-                return;
-            }
-            else
-            {
-                if (pGameobject->isSpawnedByDefault())
-                    map->AddToMap(pGameobject);
+                if (go->isSpawnedByDefault())
+                {
+                    if (!map->AddToMap(go))
+                        delete go;
+                }
             }
         }
     }

@@ -2411,11 +2411,10 @@ ObjectGuid::LowType ObjectMgr::AddGameObjectData(uint32 entry, uint32 mapId, Pos
     // We use spawn coords to spawn
     if (!map->Instanceable() && map->IsGridLoaded(data.spawnPoint))
     {
-        GameObject* go = new GameObject;
-        if (!go->LoadFromDB(spawnId, map, true))
+        GameObject* go = GameObject::CreateGameObjectFromDB(spawnId, map);
+        if (!go)
         {
             TC_LOG_ERROR("misc", "AddGameObjectData: cannot add gameobject entry {} to map", entry);
-            delete go;
             return 0;
         }
     }

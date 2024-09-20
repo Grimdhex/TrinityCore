@@ -346,13 +346,9 @@ GameObject* Transport::CreateGOPassenger(ObjectGuid::LowType guid, GameObjectDat
     if (map->GetGORespawnTime(guid))
         return nullptr;
 
-    GameObject* go = new GameObject();
-
-    if (!go->LoadFromDB(guid, map, false))
-    {
-        delete go;
+    GameObject* go = GameObject::CreateGameObjectFromDB(guid, map, false);
+    if (!go)
         return nullptr;
-    }
 
     ASSERT(data);
 

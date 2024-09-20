@@ -126,12 +126,10 @@ public:
 
         Player* player = handler->GetSession()->GetPlayer();
         Map* map = player->GetMap();
-
-        GameObject* object = new GameObject();
-        ObjectGuid::LowType guidLow = map->GenerateLowGuid<HighGuid::GameObject>();
-
         QuaternionData rot = QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.f, 0.f);
-        if (!object->Create(guidLow, objectInfo->entry, map, player->GetPhaseMaskForSpawn(), *player, rot, 255, GO_STATE_READY))
+
+        GameObject* object = GameObject::CreateGameObject(objectInfo->entry, map, player->GetPhaseMaskForSpawn(), *player, rot, 255, GO_STATE_READY);
+        if(!object)
         {
             delete object;
             return false;
@@ -142,15 +140,15 @@ public:
 
         // fill the gameobject data and save to the db
         object->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
-        guidLow = object->GetSpawnId();
+        ObjectGuid::LowType guidLow = object->GetSpawnId();
 
         // delete the old object and do a clean load from DB with a fresh new GameObject instance.
         // this is required to avoid weird behavior and memory leaks
         delete object;
 
-        object = new GameObject();
         // this will generate a new guid if the object is in an instance
-        if (!object->LoadFromDB(guidLow, map, true))
+        object = GameObject::CreateGameObjectFromDB(guidLow, map);
+        if (!object)
         {
             delete object;
             return false;
