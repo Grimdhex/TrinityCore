@@ -61,7 +61,7 @@ GridMap::~GridMap()
     unloadData();
 }
 
-bool GridMap::loadData(char const* filename)
+GridMap::LoadResult GridMap::loadData(char const* filename)
 {
     // Unload old data if exist
     unloadData();
@@ -70,13 +70,13 @@ bool GridMap::loadData(char const* filename)
     // Not return error if file not found
     FILE* in = fopen(filename, "rb");
     if (!in)
-        return true;
+        return LoadResult::FileDoesNotExist;
 
     _fileExists = true;
     if (fread(&header, sizeof(header), 1, in) != 1)
     {
         fclose(in);
-        return false;
+        return LoadResult::InvalidFile;
     }
 
     if (header.mapMagic == MapMagic && header.versionMagic == MapVersionMagic)
@@ -86,37 +86,37 @@ bool GridMap::loadData(char const* filename)
         {
             TC_LOG_ERROR("maps", "Error loading map area data\n");
             fclose(in);
-            return false;
+            return LoadResult::InvalidFile;
         }
         // load up height data
         if (header.heightMapOffset && !loadHeightData(in, header.heightMapOffset, header.heightMapSize))
         {
             TC_LOG_ERROR("maps", "Error loading map height data\n");
             fclose(in);
-            return false;
+            return LoadResult::InvalidFile;
         }
         // load up liquid data
         if (header.liquidMapOffset && !loadLiquidData(in, header.liquidMapOffset, header.liquidMapSize))
         {
             TC_LOG_ERROR("maps", "Error loading map liquids data\n");
             fclose(in);
-            return false;
+            return LoadResult::InvalidFile;
         }
         // loadup holes data (if any. check header.holesOffset)
         if (header.holesSize && !loadHolesData(in, header.holesOffset, header.holesSize))
         {
             TC_LOG_ERROR("maps", "Error loading map holes data\n");
             fclose(in);
-            return false;
+            return LoadResult::InvalidFile;
         }
         fclose(in);
-        return true;
+        return LoadResult::Ok;
     }
 
     TC_LOG_ERROR("maps", "Map file '{}' is from an incompatible map version ({} v{}), {} v{} is expected. Please pull your source, recompile tools and recreate maps using the updated mapextractor, then replace your old map files with new files. If you still have problems search on forum for error TCE00018.",
         filename, std::string_view(header.mapMagic.data(), 4), header.versionMagic, std::string_view(MapMagic.data(), 4), MapVersionMagic);
     fclose(in);
-    return false;
+    return LoadResult::InvalidFile;
 }
 
 void GridMap::unloadData()

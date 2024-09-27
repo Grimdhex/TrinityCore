@@ -43,7 +43,7 @@ MapManager::MapManager()
     i_timer.SetInterval(sWorld->getIntConfig(CONFIG_INTERVAL_MAPUPDATE));
 }
 
-MapManager::~MapManager() { }
+MapManager::~MapManager() = default;
 
 void MapManager::Initialize()
 {
@@ -107,12 +107,12 @@ Map* MapManager::FindBaseNonInstanceMap(uint32 mapId) const
 
 Map* MapManager::CreateMap(uint32 id, Player* player, uint32 loginInstanceId)
 {
-    Map* m = CreateBaseMap(id);
+    Map* map = CreateBaseMap(id);
 
-    if (m && m->Instanceable())
-        m = ((MapInstanced*)m)->CreateInstanceForPlayer(id, player, loginInstanceId);
+    if (map && map->Instanceable())
+        map = static_cast<MapInstanced*>(map)->CreateInstanceForPlayer(id, player, loginInstanceId);
 
-    return m;
+    return map;
 }
 
 Map* MapManager::FindMap(uint32 mapid, uint32 instanceId) const
@@ -124,7 +124,7 @@ Map* MapManager::FindMap(uint32 mapid, uint32 instanceId) const
     if (!map->Instanceable())
         return instanceId == 0 ? map : nullptr;
 
-    return ((MapInstanced*)map)->FindInstanceMap(instanceId);
+    return static_cast<MapInstanced*>(map)->FindInstanceMap(instanceId);
 }
 
 Map::EnterState MapManager::PlayerCannotEnter(uint32 mapid, Player* player, bool loginCheck)
@@ -248,12 +248,12 @@ bool MapManager::ExistMapAndVMap(uint32 mapid, float x, float y)
 
 bool MapManager::IsValidMAP(uint32 mapid, bool startUp)
 {
-    MapEntry const* mEntry = sMapStore.LookupEntry(mapid);
+    MapEntry const* mapEntry = sMapStore.LookupEntry(mapid);
 
     if (startUp)
-        return mEntry ? true : false;
+        return mapEntry ? true : false;
     else
-        return mEntry && (!mEntry->IsDungeon() || sObjectMgr->GetInstanceTemplate(mapid));
+        return mapEntry && (!mapEntry->IsDungeon() || sObjectMgr->GetInstanceTemplate(mapid));
 
     /// @todo add check for battleground template
 }

@@ -26,6 +26,7 @@
 #include "GridMap.h"
 #include "GridRefManager.h"
 #include "MapDefines.h"
+#include "MapReference.h"
 #include "MapRefManager.h"
 #include "MPSCQueue.h"
 #include "ObjectGuid.h"
@@ -159,8 +160,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             return false;
         }
 
-        virtual bool AddPlayerToMap(Player*);
-        virtual void RemovePlayerFromMap(Player*, bool);
+        virtual bool AddPlayerToMap(Player* player);
+        virtual void RemovePlayerFromMap(Player* player, bool remove);
 
         template<class T> bool AddToMap(T *);
         template<class T> void RemoveFromMap(T *, bool);
@@ -205,16 +206,13 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             grid.ResetTimeTracker(time_t(float(i_gridExpiry)*factor));
         }
 
-        time_t GetGridExpiry(void) const { return i_gridExpiry; }
-        uint32 GetId() const;
+        time_t GetGridExpiry() const { return i_gridExpiry; }
 
-        static bool ExistMap(uint32 mapid, int gx, int gy);
-        static bool ExistVMap(uint32 mapid, int gx, int gy);
+        static bool ExistMap(uint32 mapid, int32 gx, int32 gy);
+        static bool ExistVMap(uint32 mapid, int32 gx, int32 gy);
 
         static void InitStateMachine();
         static void DeleteStateMachine();
-
-        Map const* GetParent() const { return m_parentMap; }
 
         void GetFullTerrainStatusForPosition(uint32 phaseMask, float x, float y, float z, PositionFullTerrainStatus& data, map_liquidHeaderTypeFlags reqLiquidType, float collisionHeight) const;
         ZLiquidStatus GetLiquidStatus(uint32 phaseMask, float x, float y, float z, map_liquidHeaderTypeFlags ReqLiquidType, LiquidData* data = nullptr, float collisionHeight = 2.03128f) const; // DEFAULT_COLLISION_HEIGHT in Object.h
@@ -227,9 +225,18 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, float x, float y, float z) const;
         void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, Position const& pos) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
 
+        float GetMinHeight(float x, float y) const;
+        float GetHeight(float x, float y, float z, bool checkVMap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const;
+        float GetGridHeight(float x, float y) const;
+        float GetHeight(Position const& pos, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return GetHeight(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), vmap, maxSearchDist); }
+        float GetHeight(uint32 phasemask, float x, float y, float z, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return std::max<float>(GetHeight(x, y, z, vmap, maxSearchDist), GetGameObjectFloor(phasemask, x, y, z, maxSearchDist)); }
+        float GetHeight(uint32 phasemask, Position const& pos, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return GetHeight(phasemask, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), vmap, maxSearchDist); }
+
         float GetWaterLevel(float x, float y) const;
         bool IsInWater(uint32 phaseMask, float x, float y, float z, LiquidData* data = nullptr) const;
         bool IsUnderWater(uint32 phaseMask, float x, float y, float z) const;
+
+        float GetWaterOrGroundLevel(uint32 phasemask, float x, float y, float z, float* ground = nullptr, bool swim = false, float collisionHeight = 2.03128f) const; // DEFAULT_COLLISION_HEIGHT in Object.h
 
         void MoveAllCreaturesInMoveList();
         void MoveAllGameObjectsInMoveList();
@@ -245,7 +252,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool CheckGridIntegrity(Creature* c, bool moved) const;
 
         uint32 GetInstanceId() const { return i_InstanceId; }
-        uint8 GetSpawnMode() const { return (i_spawnMode); }
+        uint8 GetSpawnMode() const { return (i_spawnMode); } //@todo: replace by GetDifficulty()
 
         Trinity::unique_weak_ptr<Map> GetWeakPtr() const { return m_weakRef; }
         void SetWeakPtr(Trinity::unique_weak_ptr<Map> weakRef) { m_weakRef = std::move(weakRef); }
@@ -266,12 +273,14 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             CANNOT_ENTER_UNSPECIFIED_REASON
         };
         virtual EnterState CannotEnter(Player* /*player*/) { return CAN_ENTER; }
-        char const* GetMapName() const;
 
         // have meaning only for instanced map (that have set real difficulty)
-        Difficulty GetDifficulty() const { return Difficulty(GetSpawnMode()); }
+        Difficulty GetDifficulty() const { return Difficulty(i_spawnMode); }
         bool IsRegularDifficulty() const;
         MapDifficulty const* GetMapDifficulty() const;
+
+        uint32 GetId() const;
+        char const* GetMapName() const;
 
         bool Instanceable() const;
         bool IsDungeon() const;
@@ -283,6 +292,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool IsBattleground() const;
         bool IsBattleArena() const;
         bool IsBattlegroundOrArena() const;
+        bool IsAlwaysActive() const;
         bool GetEntrancePos(int32& mapid, float& x, float& y) const;
 
         void AddObjectToRemoveList(WorldObject* obj);
@@ -306,6 +316,14 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         typedef MapRefManager PlayerList;
         PlayerList const& GetPlayers() const { return m_mapRefManager; }
 
+        template <typename T>
+        void DoOnPlayers(T&& fn)
+        {
+            for (MapReference const& ref : GetPlayers())
+                if (Player* player = ref.GetSource())
+                    fn(player);
+        }
+
         //per-map script storage
         void ScriptsStart(std::map<uint32, std::multimap<uint32, ScriptInfo>> const& scripts, uint32 id, Object* source, Object* target);
         void ScriptCommandStart(ScriptInfo const& script, uint32 delay, Object* source, Object* target);
@@ -326,7 +344,10 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         Player* GetPlayer(ObjectGuid const& guid);
         Corpse* GetCorpse(ObjectGuid const& guid);
         Creature* GetCreature(ObjectGuid const& guid);
+        DynamicObject* GetDynamicObject(ObjectGuid const& guid);
         GameObject* GetGameObject(ObjectGuid const& guid);
+        Pet* GetPet(ObjectGuid const& guid);
+        Transport* GetTransport(ObjectGuid const& guid);
         Creature* GetCreatureBySpawnId(ObjectGuid::LowType spawnId) const;
         GameObject* GetGameObjectBySpawnId(ObjectGuid::LowType spawnId) const;
         WorldObject* GetWorldObjectBySpawnId(SpawnObjectType type, ObjectGuid::LowType spawnId) const
@@ -341,9 +362,6 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
                     return nullptr;
             }
         }
-        Transport* GetTransport(ObjectGuid const& guid);
-        DynamicObject* GetDynamicObject(ObjectGuid const& guid);
-        Pet* GetPet(ObjectGuid const& guid);
 
         MapStoredObjectTypesContainer& GetObjectsStore() { return _objectsStore; }
 
@@ -382,13 +400,6 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         BattlegroundMap* ToBattlegroundMap() { if (IsBattlegroundOrArena()) return reinterpret_cast<BattlegroundMap*>(this); else return nullptr;  }
         BattlegroundMap const* ToBattlegroundMap() const { if (IsBattlegroundOrArena()) return reinterpret_cast<BattlegroundMap const*>(this); return nullptr; }
 
-        float GetWaterOrGroundLevel(uint32 phasemask, float x, float y, float z, float* ground = nullptr, bool swim = false, float collisionHeight = 2.03128f) const; // DEFAULT_COLLISION_HEIGHT in Object.h
-        float GetMinHeight(float x, float y) const;
-        float GetHeight(float x, float y, float z, bool checkVMap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const;
-        float GetGridHeight(float x, float y) const;
-        float GetHeight(Position const& pos, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return GetHeight(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), vmap, maxSearchDist); }
-        float GetHeight(uint32 phasemask, float x, float y, float z, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return std::max<float>(GetHeight(x, y, z, vmap, maxSearchDist), GetGameObjectFloor(phasemask, x, y, z, maxSearchDist)); }
-        float GetHeight(uint32 phasemask, Position const& pos, bool vmap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const { return GetHeight(phasemask, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), vmap, maxSearchDist); }
         bool isInLineOfSight(float x1, float y1, float z1, float x2, float y2, float z2, uint32 phasemask, LineOfSightChecks checks, VMAP::ModelIgnoreFlags ignoreFlags) const;
         void Balance() { _dynamicTree.balance(); }
         void RemoveGameObjectModel(GameObjectModel const& model) { _dynamicTree.remove(model); }
@@ -474,10 +485,12 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         virtual std::string GetDebugInfo() const;
 
     private:
-        void LoadMapAndVMap(int gx, int gy);
-        void LoadVMap(int gx, int gy);
-        void LoadMap(int gx, int gy, bool reload = false);
-        void LoadMMap(int gx, int gy);
+        void LoadMapAndVMap(int32 gx, int32 gy);
+        void LoadMap(int32 gx, int32 gy);
+        void LoadVMap(int32 gx, int32 gy);
+        void LoadMMap(int32 gx, int32 gy);
+
+        void UnloadMap(int32 gx, int32 gy);
         GridMap* GetGrid(float x, float y);
 
         void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
@@ -509,7 +522,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void EnsureGridCreated(GridCoord const&);
         void EnsureGridCreated_i(GridCoord const&);
         bool EnsureGridLoaded(Cell const&);
-        void EnsureGridLoadedForActiveObject(Cell const&, WorldObject* object);
+        void EnsureGridLoadedForActiveObject(Cell const&, WorldObject const* object);
 
         void buildNGridLinkage(NGridType* pNGridType) { pNGridType->link(this); }
 
@@ -519,13 +532,16 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             return i_grids[x][y];
         }
 
+        bool isGridObjectDataLoaded(uint32 x, uint32 y) const { return getNGrid(x, y)->isGridObjectDataLoaded(); }
+        void setGridObjectDataLoaded(bool pLoaded, uint32 x, uint32 y) { getNGrid(x, y)->setGridObjectDataLoaded(pLoaded); }
+
         void setNGrid(NGridType* grid, uint32 x, uint32 y);
         void ScriptsProcess();
 
         void SendObjectUpdates();
 
     protected:
-        void SetUnloadReferenceLock(GridCoord const& p, bool on) { getNGrid(p.x_coord, p.y_coord)->setUnloadReferenceLock(on); }
+        virtual void LoadGridObjects(NGridType* grid, Cell const& cell);
 
         std::mutex _mapLock;
         std::mutex _gridLock;
@@ -563,6 +579,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void _ScriptProcessDoor(Object* source, Object* target, ScriptInfo const* scriptInfo) const;
         GameObject* _FindGameObject(WorldObject* pWorldObject, ObjectGuid::LowType guid) const;
 
+        static constexpr int32 GetBitsetIndex(int32 gx, int32 gy) { return gx * MAX_NUMBER_OF_GRIDS + gy; }
+
         time_t i_gridExpiry;
 
         //used for fast base_map (e.g. MapInstanced class object) search for
@@ -570,7 +588,9 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         Map* m_parentMap;
 
         NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
-        GridMap* GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+        std::unique_ptr<GridMap> _gridMap[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+        uint16 GridMapReference[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+        std::bitset<MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS> _gridFileExists; // cache what grids are available for this map (not including parent/child maps)
         std::bitset<TOTAL_NUMBER_OF_CELLS_PER_MAP*TOTAL_NUMBER_OF_CELLS_PER_MAP> marked_cells;
 
         //these functions used to process player/mob aggro reactions and
