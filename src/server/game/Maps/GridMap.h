@@ -60,6 +60,7 @@ class TC_GAME_API GridMap
     uint8 _liquidOffY;
     uint8 _liquidWidth;
     uint8 _liquidHeight;
+    bool _fileExists;
 
     uint16* _holes;
 
@@ -88,6 +89,7 @@ public:
     float getMinHeight(float x, float y) const;
     float getLiquidLevel(float x, float y) const;
     ZLiquidStatus GetLiquidStatus(float x, float y, float z, Optional<map_liquidHeaderTypeFlags> ReqLiquidType, LiquidData* data = 0, float collisionHeight = 2.03128f); // DEFAULT_COLLISION_HEIGHT in Object.h
+    bool fileExists() const { return _fileExists; }
 };
 
 #endif // TRINITY_GRID_MAP_H

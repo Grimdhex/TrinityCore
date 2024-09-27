@@ -246,10 +246,10 @@ void Map::LoadAllCells()
 
 void Map::InitStateMachine()
 {
-    si_GridStates[GRID_STATE_INVALID] = new InvalidState;
-    si_GridStates[GRID_STATE_ACTIVE] = new ActiveState;
-    si_GridStates[GRID_STATE_IDLE] = new IdleState;
-    si_GridStates[GRID_STATE_REMOVAL] = new RemovalState;
+    si_GridStates[GRID_STATE_INVALID] = new InvalidState();
+    si_GridStates[GRID_STATE_ACTIVE] = new ActiveState();
+    si_GridStates[GRID_STATE_IDLE] = new IdleState();
+    si_GridStates[GRID_STATE_REMOVAL] = new RemovalState();
 }
 
 void Map::DeleteStateMachine()
@@ -270,13 +270,13 @@ i_gridExpiry(expiry),
 i_scriptLock(false), _respawnTimes(std::make_unique<RespawnListContainer>()), _respawnCheckTimer(0)
 {
     m_parentMap = (_parent ? _parent : this);
-    for (unsigned int idx=0; idx < MAX_NUMBER_OF_GRIDS; ++idx)
+    for (unsigned int x = 0; x < MAX_NUMBER_OF_GRIDS; ++x)
     {
-        for (unsigned int j=0; j < MAX_NUMBER_OF_GRIDS; ++j)
+        for (unsigned int y = 0; y < MAX_NUMBER_OF_GRIDS; ++y)
         {
             //z code
-            GridMaps[idx][j] =nullptr;
-            setNGrid(nullptr, idx, j);
+            GridMaps[x][y] = nullptr;
+            setNGrid(nullptr, x, y);
         }
     }
 

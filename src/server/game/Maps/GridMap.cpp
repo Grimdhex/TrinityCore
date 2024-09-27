@@ -52,6 +52,7 @@ GridMap::GridMap()
     _liquidEntry = nullptr;
     _liquidFlags = nullptr;
     _liquidMap  = nullptr;
+    _fileExists = false;
     _holes = nullptr;
 }
 
@@ -71,6 +72,7 @@ bool GridMap::loadData(char const* filename)
     if (!in)
         return true;
 
+    _fileExists = true;
     if (fread(&header, sizeof(header), 1, in) != 1)
     {
         fclose(in);
@@ -136,6 +138,7 @@ void GridMap::unloadData()
     _liquidMap  = nullptr;
     _holes = nullptr;
     _gridGetHeight = &GridMap::getHeightFromFlat;
+    _fileExists = false;
 }
 
 bool GridMap::loadAreaData(FILE* in, uint32 offset, uint32 /*size*/)

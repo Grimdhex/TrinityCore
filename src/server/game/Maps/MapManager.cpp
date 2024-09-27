@@ -57,8 +57,8 @@ void MapManager::Initialize()
 
 void MapManager::InitializeVisibilityDistanceInfo()
 {
-    for (MapMapType::iterator iter = i_maps.begin(); iter != i_maps.end(); ++iter)
-        (*iter).second->InitVisibilityDistance();
+    for (auto iter = i_maps.begin(); iter != i_maps.end(); ++iter)
+        iter->second->InitVisibilityDistance();
 }
 
 MapManager* MapManager::instance()
@@ -71,12 +71,11 @@ Map* MapManager::CreateBaseMap(uint32 id)
 {
     Map* map = FindBaseMap(id);
 
-    if (map == nullptr)
+    if (!map)
     {
         std::lock_guard<std::mutex> lock(_mapsLock);
 
-        MapEntry const* entry = sMapStore.LookupEntry(id);
-        ASSERT(entry);
+        MapEntry const* entry = sMapStore.AssertEntry(id);
 
         if (entry->Instanceable())
             map = new MapInstanced(id, i_gridCleanUpDelay);
