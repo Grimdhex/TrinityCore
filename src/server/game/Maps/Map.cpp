@@ -1795,6 +1795,7 @@ float Map::GetWaterOrGroundLevel(uint32 phasemask, float x, float y, float z, fl
     return VMAP_INVALID_HEIGHT_VALUE;
 }
 
+//@todo: rename GetStaticHeight + add GetMinHeight + GetGridHeight
 float Map::GetHeight(float x, float y, float z, bool checkVMap /*= true*/, float maxSearchDist /*= DEFAULT_HEIGHT_SEARCH*/) const
 {
     // find raw .map surface under Z coordinates
@@ -1854,6 +1855,7 @@ static inline bool IsInWMOInterior(uint32 mogpFlags)
     return (mogpFlags & 0x2000) != 0;
 }
 
+// @todo: Look to replace all variable by VMPA:AreaAndLiquidData
 bool Map::GetAreaInfo(uint32 phaseMask, float x, float y, float z, uint32& flags, int32& adtId, int32& rootId, int32& groupId) const
 {
     float vmap_z = z;
@@ -2011,6 +2013,7 @@ ZLiquidStatus Map::GetLiquidStatus(uint32 phaseMask, float x, float y, float z, 
 
             float delta = liquid_level - z;
 
+            //@todo: few improvements here compare to master
             // Get position delta
             if (delta > collisionHeight)                   // Under water
                 return LIQUID_MAP_UNDER_WATER;
@@ -2189,7 +2192,7 @@ float Map::GetWaterLevel(float x, float y) const
 {
     if (GridMap* gmap = const_cast<Map*>(this)->GetGrid(x, y))
         return gmap->getLiquidLevel(x, y);
-    else
+
         return 0;
 }
 

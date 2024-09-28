@@ -233,6 +233,7 @@ Map::EnterState MapManager::PlayerCannotEnter(uint32 mapid, Player* player, bool
 void MapManager::Update(uint32 diff)
 {
     i_timer.Update(diff);
+
     if (!i_timer.Passed())
         return;
 
@@ -252,8 +253,6 @@ void MapManager::Update(uint32 diff)
 
     i_timer.SetCurrent(0);
 }
-
-void MapManager::DoDelayedMovesAndRemoves() { }
 
 bool MapManager::ExistMapAndVMap(uint32 mapid, float x, float y)
 {
