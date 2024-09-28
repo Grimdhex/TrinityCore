@@ -31,142 +31,114 @@ struct TransportCreatureProto;
 
 class TC_GAME_API MapManager
 {
-    public:
-        static MapManager* instance();
+    MapManager();
+    ~MapManager();
 
-        Map* CreateBaseMap(uint32 mapId);
-        Map* FindBaseNonInstanceMap(uint32 mapId) const;
-        Map* CreateMap(uint32 mapId, Player* player, uint32 loginInstanceId=0);
-        Map* FindMap(uint32 mapId, uint32 instanceId) const;
+public:
+    MapManager(MapManager const&) = delete;
+    MapManager& operator=(MapManager const&) = delete;
 
-        uint32 GetAreaId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const
-        {
-            Map const* m = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
-            return m->GetAreaId(phaseMask, x, y, z);
-        }
-        uint32 GetAreaId(uint32 phaseMask, uint32 mapid, Position const& pos) const { return GetAreaId(phaseMask, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
-        uint32 GetAreaId(uint32 phaseMask, WorldLocation const& loc) const { return GetAreaId(phaseMask, loc.GetMapId(), loc); }
-        uint32 GetZoneId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const
-        {
-            Map const* m = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
-            return m->GetZoneId(phaseMask, x, y, z);
-        }
-        uint32 GetZoneId(uint32 phaseMask, uint32 mapid, Position const& pos) const { return GetZoneId(phaseMask, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
-        uint32 GetZoneId(uint32 phaseMask, WorldLocation const& loc) const { return GetZoneId(phaseMask, loc.GetMapId(), loc); }
-        void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, uint32 mapid, float x, float y, float z) const
-        {
-            Map const* m = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
-            m->GetZoneAndAreaId(phaseMask, zoneid, areaid, x, y, z);
-        }
-        void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, uint32 mapid, Position const& pos) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
-        void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, WorldLocation const& loc) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, loc.GetMapId(), loc); }
+    static MapManager* instance();
 
-        void Initialize();
-        void Update(uint32 diff);
+    Map* CreateBaseMap(uint32 mapId);
+    Map* FindBaseNonInstanceMap(uint32 mapId) const;
+    Map* CreateMap(uint32 mapId, Player* player, uint32 loginInstanceId=0);
+    Map* FindMap(uint32 mapId, uint32 instanceId) const;
 
-        void SetGridCleanUpDelay(uint32 t)
-        {
-            if (t < MIN_GRID_DELAY)
-                i_gridCleanUpDelay = MIN_GRID_DELAY;
-            else
-                i_gridCleanUpDelay = t;
-        }
+    uint32 GetAreaId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const;
+    uint32 GetAreaId(uint32 phaseMask, uint32 mapid, Position const& pos) const { return GetAreaId(phaseMask, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
+    uint32 GetAreaId(uint32 phaseMask, WorldLocation const& loc) const { return GetAreaId(phaseMask, loc.GetMapId(), loc); }
 
-        void SetMapUpdateInterval(uint32 t)
-        {
-            if (t < MIN_MAP_UPDATE_DELAY)
-                t = MIN_MAP_UPDATE_DELAY;
+    uint32 GetZoneId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const;
+    uint32 GetZoneId(uint32 phaseMask, uint32 mapid, Position const& pos) const { return GetZoneId(phaseMask, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
+    uint32 GetZoneId(uint32 phaseMask, WorldLocation const& loc) const { return GetZoneId(phaseMask, loc.GetMapId(), loc); }
 
-            i_timer.SetInterval(t);
-            i_timer.Reset();
-        }
+    void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, uint32 mapid, float x, float y, float z) const;
+    void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, uint32 mapid, Position const& pos) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()); }
+    void GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, WorldLocation const& loc) const { GetZoneAndAreaId(phaseMask, zoneid, areaid, loc.GetMapId(), loc); }
 
-        //void LoadGrid(int mapid, int instId, float x, float y, WorldObject const* obj, bool no_unload = false);
-        void UnloadAll();
+    void Initialize();
 
-        static bool ExistMapAndVMap(uint32 mapid, float x, float y);
-        static bool IsValidMAP(uint32 mapid, bool startUp);
+    void Update(uint32 diff);
 
-        static bool IsValidMapCoord(uint32 mapid, float x, float y)
-        {
-            return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y);
-        }
+    void SetGridCleanUpDelay(uint32 t)
+    {
+        if (t < MIN_GRID_DELAY)
+            i_gridCleanUpDelay = MIN_GRID_DELAY;
+        else
+            i_gridCleanUpDelay = t;
+    }
 
-        static bool IsValidMapCoord(uint32 mapid, float x, float y, float z)
-        {
-            return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y, z);
-        }
+    void SetMapUpdateInterval(uint32 t)
+    {
+        if (t < MIN_MAP_UPDATE_DELAY)
+            t = MIN_MAP_UPDATE_DELAY;
 
-        static bool IsValidMapCoord(uint32 mapid, float x, float y, float z, float o)
-        {
-            return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y, z, o);
-        }
+        i_timer.SetInterval(t);
+        i_timer.Reset();
+    }
 
-        static bool IsValidMapCoord(uint32 mapid, Position const& pos)
-        {
-            return IsValidMapCoord(mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
-        }
+    //void LoadGrid(int mapid, int instId, float x, float y, WorldObject const* obj, bool no_unload = false);
+    void UnloadAll();
 
-        static bool IsValidMapCoord(WorldLocation const& loc)
-        {
-            return IsValidMapCoord(loc.GetMapId(), loc);
-        }
+    static bool ExistMapAndVMap(uint32 mapid, float x, float y);
+    static bool IsValidMAP(uint32 mapid, bool startUp);
 
-        void DoDelayedMovesAndRemoves();
+    static bool IsValidMapCoord(uint32 mapid, float x, float y) { return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y); }
+    static bool IsValidMapCoord(uint32 mapid, float x, float y, float z) { return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y, z); }
+    static bool IsValidMapCoord(uint32 mapid, float x, float y, float z, float o){ return IsValidMAP(mapid, false) && Trinity::IsValidMapCoord(x, y, z, o); }
+    static bool IsValidMapCoord(uint32 mapid, Position const& pos) { return IsValidMapCoord(mapid, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation()); }
+    static bool IsValidMapCoord(WorldLocation const& loc) { return IsValidMapCoord(loc.GetMapId(), loc); }
 
-        Map::EnterState PlayerCannotEnter(uint32 mapid, Player* player, bool loginCheck = false);
-        void InitializeVisibilityDistanceInfo();
+    void DoDelayedMovesAndRemoves();
 
-        /* statistics */
-        uint32 GetNumInstances();
-        uint32 GetNumPlayersInInstances();
+    Map::EnterState PlayerCannotEnter(uint32 mapid, Player* player, bool loginCheck = false);
+    void InitializeVisibilityDistanceInfo();
 
-        // Instance ID management
-        void InitInstanceIds();
-        uint32 GenerateInstanceId();
-        void RegisterInstanceId(uint32 instanceId);
-        void FreeInstanceId(uint32 instanceId);
+    /* statistics */
+    uint32 GetNumInstances();
+    uint32 GetNumPlayersInInstances();
 
-        MapUpdater * GetMapUpdater() { return &m_updater; }
+    // Instance ID management
+    void InitInstanceIds();
+    uint32 GenerateInstanceId();
+    void RegisterInstanceId(uint32 instanceId);
+    void FreeInstanceId(uint32 instanceId);
 
-        template<typename Worker>
-        void DoForAllMaps(Worker&& worker);
+    MapUpdater * GetMapUpdater() { return &m_updater; }
 
-        template<typename Worker>
-        void DoForAllMapsWithMapId(uint32 mapId, Worker&& worker);
+    template<typename Worker>
+    void DoForAllMaps(Worker&& worker);
 
-        void IncreaseScheduledScriptsCount() { ++_scheduledScripts; }
-        void DecreaseScheduledScriptCount() { --_scheduledScripts; }
-        void DecreaseScheduledScriptCount(std::size_t count) { _scheduledScripts -= count; }
-        bool IsScriptScheduled() const { return _scheduledScripts > 0; }
+    template<typename Worker>
+    void DoForAllMapsWithMapId(uint32 mapId, Worker&& worker);
 
-    private:
-        typedef std::unordered_map<uint32, Trinity::unique_trackable_ptr<Map>> MapMapType;
-        typedef boost::dynamic_bitset<size_t> InstanceIds;
+    void IncreaseScheduledScriptsCount() { ++_scheduledScripts; }
+    void DecreaseScheduledScriptCount() { --_scheduledScripts; }
+    void DecreaseScheduledScriptCount(std::size_t count) { _scheduledScripts -= count; }
+    bool IsScriptScheduled() const { return _scheduledScripts > 0; }
 
-        MapManager();
-        ~MapManager();
+private:
+    typedef std::unordered_map<uint32, Trinity::unique_trackable_ptr<Map>> MapMapType;
+    typedef boost::dynamic_bitset<size_t> InstanceIds;
 
-        Map* FindBaseMap(uint32 mapId) const
-        {
-            MapMapType::const_iterator iter = i_maps.find(mapId);
-            return (iter == i_maps.end() ? nullptr : iter->second.get());
-        }
+    Map* FindBaseMap(uint32 mapId) const
+    {
+        MapMapType::const_iterator iter = i_maps.find(mapId);
+        return (iter == i_maps.end() ? nullptr : iter->second.get());
+    }
 
-        MapManager(MapManager const&) = delete;
-        MapManager& operator=(MapManager const&) = delete;
+    std::mutex _mapsLock;
+    uint32 i_gridCleanUpDelay;
+    MapMapType i_maps;
+    IntervalTimer i_timer;
 
-        std::mutex _mapsLock;
-        uint32 i_gridCleanUpDelay;
-        MapMapType i_maps;
-        IntervalTimer i_timer;
+    InstanceIds _freeInstanceIds;
+    uint32 _nextInstanceId;
+    MapUpdater m_updater;
 
-        InstanceIds _freeInstanceIds;
-        uint32 _nextInstanceId;
-        MapUpdater m_updater;
-
-        // atomic op counter for active scripts amount
-        std::atomic<std::size_t> _scheduledScripts;
+    // atomic op counter for active scripts amount
+    std::atomic<std::size_t> _scheduledScripts;
 };
 
 template<typename Worker>
@@ -209,4 +181,5 @@ inline void MapManager::DoForAllMapsWithMapId(uint32 mapId, Worker&& worker)
 }
 
 #define sMapMgr MapManager::instance()
+
 #endif

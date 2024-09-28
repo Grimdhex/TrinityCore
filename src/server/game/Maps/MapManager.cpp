@@ -35,6 +35,7 @@
 #include "Opcodes.h"
 #include "ScriptMgr.h"
 #include <numeric>
+#include <mutex>
 
 MapManager::MapManager()
     : _nextInstanceId(0), _scheduledScripts(0)
@@ -125,6 +126,24 @@ Map* MapManager::FindMap(uint32 mapid, uint32 instanceId) const
         return instanceId == 0 ? map : nullptr;
 
     return static_cast<MapInstanced*>(map)->FindInstanceMap(instanceId);
+}
+
+uint32 MapManager::GetAreaId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const
+{
+    Map const* map = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
+    return map->GetAreaId(phaseMask, x, y, z);
+}
+
+uint32 MapManager::GetZoneId(uint32 phaseMask, uint32 mapid, float x, float y, float z) const
+{
+    Map const* map = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
+    return map->GetZoneId(phaseMask, x, y, z);
+}
+
+void MapManager::GetZoneAndAreaId(uint32 phaseMask, uint32& zoneid, uint32& areaid, uint32 mapid, float x, float y, float z) const
+{
+    Map const* map = const_cast<MapManager*>(this)->CreateBaseMap(mapid);
+    map->GetZoneAndAreaId(phaseMask, zoneid, areaid, x, y, z);
 }
 
 Map::EnterState MapManager::PlayerCannotEnter(uint32 mapid, Player* player, bool loginCheck)
