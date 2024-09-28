@@ -244,7 +244,7 @@ enum AchievementCategory
 
 enum AreaFlags
 {
-    AREA_FLAG_UNK0               = 0x00000001,                // Unknown
+    AREA_FLAG_SNOW               = 0x00000001,                // snow (only Dun Morogh, Naxxramas, Razorfen Downs and Winterspring) | @note: source Cmangos
     AREA_FLAG_UNK1               = 0x00000002,                // Razorfen Downs, Naxxramas and Acherus: The Ebon Hold (3.3.5a)
     AREA_FLAG_UNK2               = 0x00000004,                // Only used for areas on map 571 (development before)
     AREA_FLAG_SLAVE_CAPITAL      = 0x00000008,                // city and city subzones
@@ -259,7 +259,7 @@ enum AreaFlags
     AREA_FLAG_NEED_FLY           = 0x00001000,                // Respawn alive at the graveyard without corpse
     AREA_FLAG_UNUSED1            = 0x00002000,                // Unused in 3.3.5a
     AREA_FLAG_OUTLAND2           = 0x00004000,                // expansion zones? (only Circle of Blood Arena not have this flag, but have 0x00000400 flag)
-    AREA_FLAG_OUTDOOR_PVP        = 0x00008000,                // pvp objective area? (Death's Door also has this flag although it's no pvp object area)
+    AREA_FLAG_OUTDOOR_PVP        = 0x00008000,                // pvp objective area? (Death's Door also has this flag, although it's no pvp object area)
     AREA_FLAG_ARENA_INSTANCE     = 0x00010000,                // used by instanced arenas only
     AREA_FLAG_UNUSED2            = 0x00020000,                // Unused in 3.3.5a
     AREA_FLAG_CONTESTED_AREA     = 0x00040000,                // On PvP servers these areas are considered contested, even though the zone it is contained in is a Horde/Alliance territory.
@@ -400,33 +400,68 @@ enum EnchantmentSlotMask
 // SummonProperties.dbc, col 1
 enum SummonPropGroup
 {
-    SUMMON_PROP_GROUP_UNKNOWN1       = 0,                   // 1160 spells in 3.0.3
-    SUMMON_PROP_GROUP_UNKNOWN2       = 1,                   // 861 spells in 3.0.3
-    SUMMON_PROP_GROUP_PETS           = 2,                   // 52 spells in 3.0.3, pets mostly
-    SUMMON_PROP_GROUP_CONTROLLABLE   = 3,                   // 13 spells in 3.0.3, mostly controllable
-    SUMMON_PROP_GROUP_UNKNOWN3       = 4                    // 86 spells in 3.0.3, taxi/mounts
+    SUMMON_PROP_GROUP_WILD                      = 0,     // NYI        // 1160 spells in 3.0.3 /// @note: CMangos source
+    SUMMON_PROP_GROUP_FRIENDLY                  = 1,     // NYI        // 861 spells in 3.0.3 /// @note: CMangos source
+    SUMMON_PROP_GROUP_PETS                      = 2,                   // 52 spells in 3.0.3, pets mostly
+    SUMMON_PROP_GROUP_CONTROLLABLE              = 3,                   // 13 spells in 3.0.3, mostly controllable
+    SUMMON_PROP_GROUP_VEHICULE                  = 4,     // NYI        // 86 spells in 3.0.3, taxi/mounts /// @note: CMangos source
+    SUMMON_PROP_GROUP_UNCONTROLLABLE_VEHICLE    = 5
 };
 
-// SummonProperties.dbc, col 5
+/// @note: CMangos source
+// SummonProperties.dbc, col 2          == FactionId        (m_faction)
+// SummonProperties.dbc, col 3          == Title            (m_title)
+enum UnitNameSummonTitle
+{
+    UNITNAME_SUMMON_TITLE_NONE          = 0,     // NYI     // no default title, different summons, 1330 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_PET           = 1,     // NYI     // 's Pet,           generic summons, 49 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_GUARDIAN      = 2,     // NYI     // 's Guardian,      summon guardian, 393 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_MINION        = 3,     // NYI     // 's Minion,        summon army, 5 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_TOTEM         = 4,     // NYI     // 's Totem,         summon totem, 169 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_COMPANION     = 5,     // NYI     // 's Companion,     critter/minipet, 195 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_RUNEBLADE     = 6,     // NYI     // 's Runeblade,     summon DRW/Ghoul, 2 spells in 3.0.3"
+    UNITNAME_SUMMON_TITLE_CONSTRUCT     = 7,     // NYI     // 's Construct,     summon bot/bomb, 4 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_OPPONENT      = 8,     // NYI     // 's Opponent,      something todo with DK prequest line, 2 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_VEHICLE       = 9,     // NYI     // 's Vehicle,       summon different vehicles, 14 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_MOUNT         = 10,    // NYI     // 's Mount,         summon drake (vehicle), 3 spells
+    UNITNAME_SUMMON_TITLE_LIGHTWELL     = 11,    // NYI     // 's Lightwell,     summon lightwell, 6 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_BUTLER        = 12     // NYI     // 's Butler,        summon repair bot, 1 spells in 3.2.2a
+};
+
+/// @note: CMangos source
+// SummonProperties.dbc, col 4          == Slot             (m_slot)
+enum SummonPropSlot
+{
+    SUMMON_PROP_SLOT_NONE                   = 0,    // NYI
+    SUMMON_PROP_SLOT_TOTEM_1                = 1,    // NYI
+    SUMMON_PROP_SLOT_TOTEM_2                = 2,    // NYI
+    SUMMON_PROP_SLOT_TOTEM_3                = 3,    // NYI
+    SUMMON_PROP_SLOT_TOTEM_4                = 4,    // NYI
+    SUMMON_PROP_SLOT_CRITTER                = 5,    // NYI
+    SUMMON_PROP_SLOT_QUEST_PLAYERS_ONLY     = 6,    // NYI
+    SUMMON_PROP_SLOT_ANY_AVAILABLE_TOTEM    = -1,   // NYI
+};
+
+// SummonProperties.dbc, col 5          == Flags            (m_flags)
 enum SummonPropFlags
 {
-    SUMMON_PROP_FLAG_NONE            = 0x00000000,          // 1342 spells in 3.0.3
-    SUMMON_PROP_FLAG_UNK1            = 0x00000001,          // 75 spells in 3.0.3, something unfriendly
-    SUMMON_PROP_FLAG_UNK2            = 0x00000002,          // 616 spells in 3.0.3, something friendly
-    SUMMON_PROP_FLAG_UNK3            = 0x00000004,          // 22 spells in 3.0.3, no idea...
-    SUMMON_PROP_FLAG_UNK4            = 0x00000008,          // 49 spells in 3.0.3, some mounts
-    SUMMON_PROP_FLAG_PERSONAL_SPAWN  = 0x00000010,          // Personal Spawn (creature visible only by summoner)
-    SUMMON_PROP_FLAG_UNK6            = 0x00000020,          // 0 spells in 3.3.5, unused
-    SUMMON_PROP_FLAG_UNK7            = 0x00000040,          // 12 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK8            = 0x00000080,          // 4 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK9            = 0x00000100,          // 51 spells in 3.0.3, no idea, many quest related
-    SUMMON_PROP_FLAG_UNK10           = 0x00000200,          // 51 spells in 3.0.3, something defensive
-    SUMMON_PROP_FLAG_UNK11           = 0x00000400,          // 3 spells, requires something near?
-    SUMMON_PROP_FLAG_UNK12           = 0x00000800,          // 30 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK13           = 0x00001000,          // Lightwell, Jeeves, Gnomish Alarm-o-bot, Build vehicles(wintergrasp)
-    SUMMON_PROP_FLAG_UNK14           = 0x00002000,          // Guides, player follows
-    SUMMON_PROP_FLAG_UNK15           = 0x00004000,          // Force of Nature, Shadowfiend, Feral Spirit, Summon Water Elemental
-    SUMMON_PROP_FLAG_UNK16           = 0x00008000           // Light/Dark Bullet, Soul/Fiery Consumption, Twisted Visage, Twilight Whelp. Phase related?
+    SUMMON_PROP_FLAG_NONE                           = 0x0000, // NYI  
+    SUMMON_PROP_FLAG_ATTACK_SUMMONER                = 0x0001, // NYI
+    SUMMON_PROP_FLAG_HELP_WHEN_SUMMONED_IN_COMBAT   = 0x0002, // NYI
+    SUMMON_PROP_FLAG_USE_LEVEL_OFFSET               = 0x0004, // NYI
+    SUMMON_PROP_FLAG_DESPAWN_ON_SUMMONER_DEATH      = 0x0008, // NYI  
+    SUMMON_PROP_FLAG_PERSONAL_SPAWN                 = 0x0010, // Personal Spawn (creature visible only by summoner)
+    SUMMON_PROP_FLAG_CANNOT_DISMISS_PET             = 0x0020, // NYI
+    SUMMON_PROP_FLAG_USE_DEMON_TIMEOUT              = 0x0040, // NYI
+    SUMMON_PROP_FLAG_UNLIMITED_SUMMONS              = 0x0080, // NYI
+    SUMMON_PROP_FLAG_USE_CREATURE_LEVEL             = 0x0100, // NYI
+    SUMMON_PROP_FLAG_JOIN_SUMMONERS_SPAWN_GROUP     = 0x0200, // NYI
+    SUMMON_PROP_FLAG_DO_NOT_TOGGLE                  = 0x0400, // NYI
+    SUMMON_PROP_FLAG_DESPAWN_WHEN_EXPIRED           = 0x0800, // NYI
+    SUMMON_PROP_FLAG_USE_SUMMONER_FACTION           = 0x1000, // NYI
+    SUMMON_PROP_FLAG_DO_NOT_FOLLOW_MOUNTED_SUMMONER = 0x2000, // NYI
+    SUMMON_PROP_FLAG_SAVE_PET_AUTOCAST              = 0x4000, // NYI
+    SUMMON_PROP_FLAG_IGNORE_SUMMONERS_PHASE         = 0x8000, // NYI - Wild Only
 };
 
 #define MAX_TALENT_RANK 5
@@ -464,6 +499,43 @@ enum TotemCategoryType
     TOTEM_CATEGORY_TYPE_SPANNER         = 24
 };
 
+/// @note: CMangos source
+enum VehicleFlags
+{
+    VEHICLE_FLAG_NO_STRAFE          = 0x00000001,   // NYI          // Sets MOVEFLAG2_NO_STRAFE
+    VEHICLE_FLAG_NO_JUMPING         = 0x00000002,   // NYI          // Sets MOVEFLAG2_NO_JUMPING
+    VEHICLE_FLAG_FULLSPEEDTURNING   = 0x00000004,   // NYI          // Sets MOVEFLAG2_FULLSPEEDTURNING
+    VEHICLE_FLAG_UNK1               = 0x00000008,                   // mostly found in flying vehicles
+    VEHICLE_FLAG_ALLOW_PITCHING     = 0x00000010,   // NYI          // Sets MOVEFLAG2_ALLOW_PITCHING
+    VEHICLE_FLAG_FULLSPEEDPITCHING  = 0x00000020,   // NYI          // Sets MOVEFLAG2_FULLSPEEDPITCHING
+    VEHICLE_FLAG_CUSTOM_PITCH       = 0x00000040,   // NYI          // If set use pitchMin and pitchMax from DBC, otherwise pitchMin = -pi/2, pitchMax = pi/2
+    VEHICLE_FLAG_UNK2               = 0x00000080,                   // only one entry - 27593
+    VEHICLE_FLAG_UNK3               = 0x00000100,                   // only one entry - 27593
+    VEHICLE_FLAG_UNK4               = 0x00000200,                   // mostly cannons and turrets
+    VEHICLE_FLAG_ADJUST_AIM_ANGLE   = 0x00000400,   // NYI          // Lua_IsVehicleAimAngleAdjustable
+    VEHICLE_FLAG_ADJUST_AIM_POWER   = 0x00000800,   // NYI          // Lua_IsVehicleAimPowerAdjustable
+    VEHICLE_FLAG_UNK5               = 0x00001000,
+    VEHICLE_FLAG_UNK6               = 0x00002000,
+    VEHICLE_FLAG_UNK7               = 0x00004000,
+    VEHICLE_FLAG_UNK8               = 0x00008000,
+    VEHICLE_FLAG_UNK9               = 0x00010000,
+    VEHICLE_FLAG_UNK10              = 0x00020000,
+    VEHICLE_FLAG_UNK11              = 0x00040000,
+    VEHICLE_FLAG_UNK12              = 0x00080000,
+    VEHICLE_FLAG_UNK13              = 0x00100000,
+    VEHICLE_FLAG_FIXED_POSITION     = 0x00200000,   //NYI           // Used for vehicles that have a fixed position, such as cannons
+    VEHICLE_FLAG_DISABLE_SWITCH     = 0x00400000,   // NYI          // Can't change seats, VEHICLE_ID = 335 chopper
+    VEHICLE_FLAG_UNK15              = 0x00800000,
+    VEHICLE_FLAG_UNK16              = 0x01000000,
+    VEHICLE_FLAG_UNK17              = 0x02000000,
+    VEHICLE_FLAG_UNK18              = 0x04000000,
+    VEHICLE_FLAG_UNK19              = 0x08000000,
+    VEHICLE_FLAG_NOT_DISMISSED      = 0x10000000,   // NYI          // Vehicle not dismissed after eject passenger?
+    VEHICLE_FLAG_UNK21              = 0x20000000,
+    VEHICLE_FLAG_UNK22              = 0x40000000,
+    VEHICLE_FLAG_UNK23              = 0x80000000,                   // only two entries: 36609 and 36619. Possible related to passenger stun
+};
+
 enum VehicleSeatFlags
 {
     VEHICLE_SEAT_FLAG_HAS_LOWER_ANIM_FOR_ENTER                         = 0x00000001,
@@ -489,14 +561,14 @@ enum VehicleSeatFlags
     VEHICLE_SEAT_FLAG_PASSENGER_NOT_SELECTABLE                         = 0x00100000,
     VEHICLE_SEAT_FLAG_UNK22                                            = 0x00200000,
     VEHICLE_SEAT_FLAG_REC_HAS_VEHICLE_ENTER_ANIM                       = 0x00400000,
-    VEHICLE_SEAT_FLAG_IS_USING_VEHICLE_CONTROLS                        = 0x00800000, // Lua_IsUsingVehicleControls
+    VEHICLE_SEAT_FLAG_IS_USING_VEHICLE_CONTROLS                        = 0x00800000, // Lua_IsUsingVehicleControls | Note: there are no seats with this flag in 3.3.5a
     VEHICLE_SEAT_FLAG_ENABLE_VEHICLE_ZOOM                              = 0x01000000,
     VEHICLE_SEAT_FLAG_CAN_ENTER_OR_EXIT                                = 0x02000000, // Lua_CanExitVehicle - can enter and exit at free will
     VEHICLE_SEAT_FLAG_CAN_SWITCH                                       = 0x04000000, // Lua_CanSwitchVehicleSeats
     VEHICLE_SEAT_FLAG_HAS_START_WARITING_FOR_VEH_TRANSITION_ANIM_ENTER = 0x08000000,
     VEHICLE_SEAT_FLAG_HAS_START_WARITING_FOR_VEH_TRANSITION_ANIM_EXIT  = 0x10000000,
     VEHICLE_SEAT_FLAG_CAN_CAST                                         = 0x20000000, // Lua_UnitHasVehicleUI
-    VEHICLE_SEAT_FLAG_UNK2                                             = 0x40000000, // checked in conjunction with 0x800 in CastSpell2
+    VEHICLE_SEAT_FLAG_UNK31                                            = 0x40000000, // checked in conjunction with 0x800 in CastSpell2
     VEHICLE_SEAT_FLAG_ALLOWS_INTERACTION                               = 0x80000000
 };
 
