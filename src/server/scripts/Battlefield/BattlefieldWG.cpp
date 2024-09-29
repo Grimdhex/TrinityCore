@@ -445,28 +445,28 @@ bool BattlefieldWG::SetupBattlefield()
     SetGraveyardNumber(BATTLEFIELD_WG_GRAVEYARD_MAX);
 
     // Load from db
-    if ((sWorld->getWorldState(WS_BATTLEFIELD_WG_ACTIVE) == 0) && (sWorld->getWorldState(WS_BATTLEFIELD_WG_DEFENDER) == 0)
-            && (sWorld->getWorldState(ClockWorldState[0]) == 0))
+    if ((sWorld->GetWorldState(WS_BATTLEFIELD_WG_ACTIVE) == 0) && (sWorld->GetWorldState(WS_BATTLEFIELD_WG_DEFENDER) == 0)
+            && (sWorld->GetWorldState(ClockWorldState[0]) == 0))
     {
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_ACTIVE, uint64(false));
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_DEFENDER, uint64(urand(0, 1)));
-        sWorld->setWorldState(ClockWorldState[0], uint64(m_NoWarBattleTime));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_ACTIVE, uint64(false));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_DEFENDER, uint64(urand(0, 1)));
+        sWorld->SetWorldState(ClockWorldState[0], uint64(m_NoWarBattleTime));
     }
 
-    m_isActive = sWorld->getWorldState(WS_BATTLEFIELD_WG_ACTIVE) != 0;
-    m_DefenderTeam = TeamId(sWorld->getWorldState(WS_BATTLEFIELD_WG_DEFENDER));
+    m_isActive = sWorld->GetWorldState(WS_BATTLEFIELD_WG_ACTIVE) != 0;
+    m_DefenderTeam = static_cast<TeamId>(sWorld->GetWorldState(WS_BATTLEFIELD_WG_DEFENDER));
 
-    m_Timer = sWorld->getWorldState(ClockWorldState[0]);
+    m_Timer = sWorld->GetWorldState(ClockWorldState[0]);
     if (m_isActive)
     {
         m_isActive = false;
         m_Timer = m_RestartAfterCrash;
     }
 
-    SetData(BATTLEFIELD_WG_DATA_WON_A, uint32(sWorld->getWorldState(WS_BATTLEFIELD_WG_ATTACKED_A)));
-    SetData(BATTLEFIELD_WG_DATA_DEF_A, uint32(sWorld->getWorldState(WS_BATTLEFIELD_WG_DEFENDED_A)));
-    SetData(BATTLEFIELD_WG_DATA_WON_H, uint32(sWorld->getWorldState(WS_BATTLEFIELD_WG_ATTACKED_H)));
-    SetData(BATTLEFIELD_WG_DATA_DEF_H, uint32(sWorld->getWorldState(WS_BATTLEFIELD_WG_DEFENDED_H)));
+    SetData(BATTLEFIELD_WG_DATA_WON_A, uint32(sWorld->GetWorldState(WS_BATTLEFIELD_WG_ATTACKED_A)));
+    SetData(BATTLEFIELD_WG_DATA_DEF_A, uint32(sWorld->GetWorldState(WS_BATTLEFIELD_WG_DEFENDED_A)));
+    SetData(BATTLEFIELD_WG_DATA_WON_H, uint32(sWorld->GetWorldState(WS_BATTLEFIELD_WG_ATTACKED_H)));
+    SetData(BATTLEFIELD_WG_DATA_DEF_H, uint32(sWorld->GetWorldState(WS_BATTLEFIELD_WG_DEFENDED_H)));
 
     for (uint8 i = 0; i < BATTLEFIELD_WG_GRAVEYARD_MAX; i++)
     {
@@ -548,13 +548,13 @@ bool BattlefieldWG::Update(uint32 diff)
     bool m_return = Battlefield::Update(diff);
     if (m_saveTimer <= diff)
     {
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_ACTIVE, m_isActive);
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_DEFENDER, m_DefenderTeam);
-        sWorld->setWorldState(ClockWorldState[0], m_Timer);
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_ATTACKED_A, GetData(BATTLEFIELD_WG_DATA_WON_A));
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_DEFENDED_A, GetData(BATTLEFIELD_WG_DATA_DEF_A));
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_ATTACKED_H, GetData(BATTLEFIELD_WG_DATA_WON_H));
-        sWorld->setWorldState(WS_BATTLEFIELD_WG_DEFENDED_H, GetData(BATTLEFIELD_WG_DATA_DEF_H));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_ACTIVE, m_isActive);
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_DEFENDER, m_DefenderTeam);
+        sWorld->SetWorldState(ClockWorldState[0], m_Timer);
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_ATTACKED_A, GetData(BATTLEFIELD_WG_DATA_WON_A));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_DEFENDED_A, GetData(BATTLEFIELD_WG_DATA_DEF_A));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_ATTACKED_H, GetData(BATTLEFIELD_WG_DATA_WON_H));
+        sWorld->SetWorldState(WS_BATTLEFIELD_WG_DEFENDED_H, GetData(BATTLEFIELD_WG_DATA_DEF_H));
         m_saveTimer = 60 * IN_MILLISECONDS;
     }
     else
@@ -1530,7 +1530,7 @@ void BfWGGameObjectBuilding::Init(GameObject* go)
             break;
     }
 
-    _state = WintergraspGameObjectState(sWorld->getWorldState(_worldState));
+    _state = static_cast<WintergraspGameObjectState>(sWorld->GetWorldState(_worldState));
     switch (_state)
     {
         case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT:
@@ -1755,7 +1755,7 @@ void BfWGGameObjectBuilding::FillInitialWorldStates(WorldPackets::WorldState::In
 
 void BfWGGameObjectBuilding::Save()
 {
-    sWorld->setWorldState(_worldState, _state);
+    sWorld->SetWorldState(_worldState, _state);
 }
 
 WintergraspWorkshop::WintergraspWorkshop(BattlefieldWG* wg, uint8 type)
@@ -1840,7 +1840,7 @@ void WintergraspWorkshop::FillInitialWorldStates(WorldPackets::WorldState::InitW
 
 void WintergraspWorkshop::Save()
 {
-    sWorld->setWorldState(_staticInfo->WorldStateId, _state);
+    sWorld->SetWorldState(_staticInfo->WorldStateId, _state);
 }
 
 class Battlefield_wintergrasp : public BattlefieldScript

@@ -264,7 +264,7 @@ void Quest::BuildQuestRewards(WorldPackets::Quest::QuestRewards& rewards, Player
         }
 
         rewards.RewardMoney = GetRewOrReqMoney(player);
-        rewards.RewardXPDifficulty = GetXPReward(player) * sWorld->getRate(RATE_XP_QUEST);
+        rewards.RewardXPDifficulty = GetXPReward(player) * sWorld->GetRate(RATE_XP_QUEST);
     }
 
     rewards.RewardHonor = 10 * CalculateHonorGain(player->GetQuestLevel(this)); // rewarded honor points. Multiply with 10 to satisfy client
@@ -292,9 +292,9 @@ int32 Quest::GetRewOrReqMoney(Player const* player) const
 
     // RewardMoney: the positive amount
     if (!player || !player->IsMaxLevel())
-        return int32(_rewardMoney * sWorld->getRate(RATE_MONEY_QUEST));
+        return int32(_rewardMoney * sWorld->GetRate(RATE_MONEY_QUEST));
     else // At level cap, the money reward is the maximum amount between normal and bonus money reward
-        return std::max(int32(GetRewMoneyMaxLevel()), int32(_rewardMoney * sWorld->getRate(RATE_MONEY_QUEST)));
+        return std::max(int32(GetRewMoneyMaxLevel()), int32(_rewardMoney * sWorld->GetRate(RATE_MONEY_QUEST)));
 }
 
 uint32 Quest::GetRewMoneyMaxLevel() const
@@ -304,7 +304,7 @@ uint32 Quest::GetRewMoneyMaxLevel() const
         return 0;
 
     // Else, return the rewarded copper sum modified by the rate
-    return uint32(_rewardBonusMoney * sWorld->getRate(RATE_MONEY_MAX_LEVEL_QUEST));
+    return uint32(_rewardBonusMoney * sWorld->GetRate(RATE_MONEY_MAX_LEVEL_QUEST));
 }
 
 bool Quest::IsAutoAccept() const

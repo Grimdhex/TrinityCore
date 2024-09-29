@@ -284,11 +284,11 @@ bool LootStoreItem::Roll(bool rate) const
         return true;
 
     if (reference > 0)                                   // reference case
-        return roll_chance_f(chance* (rate ? sWorld->getRate(RATE_DROP_ITEM_REFERENCED) : 1.0f));
+        return roll_chance_f(chance* (rate ? sWorld->GetRate(RATE_DROP_ITEM_REFERENCED) : 1.0f));
 
     ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemid);
 
-    float qualityModifier = pProto && rate ? sWorld->getRate(qualityToRate[pProto->Quality]) : 1.0f;
+    float qualityModifier = pProto && rate ? sWorld->GetRate(qualityToRate[pProto->Quality]) : 1.0f;
 
     return roll_chance_f(chance*qualityModifier);
 }
@@ -589,7 +589,7 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
             if (!Referenced)
                 continue;                                       // Error message already printed at loading stage
 
-            uint32 maxcount = uint32(float(item->maxcount) * sWorld->getRate(RATE_DROP_ITEM_REFERENCED_AMOUNT));
+            uint32 maxcount = uint32(float(item->maxcount) * sWorld->GetRate(RATE_DROP_ITEM_REFERENCED_AMOUNT));
             for (uint32 loop = 0; loop < maxcount; ++loop)      // Ref multiplicator
                 Referenced->Process(loot, rate, lootMode, item->groupid);
         }

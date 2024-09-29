@@ -636,7 +636,7 @@ uint32 ArenaTeam::GetPoints(uint32 memberRating)
     else if (Type == ARENA_TEAM_3v3)
         points *= 0.88f;
 
-    points *= sWorld->getRate(RATE_ARENA_POINTS);
+    points *= sWorld->GetRate(RATE_ARENA_POINTS);
 
     return (uint32) points;
 }

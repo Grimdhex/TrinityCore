@@ -892,7 +892,7 @@ void Creature::Regenerate(Powers power)
         case POWER_FOCUS:
         {
             // For hunter pets.
-            addvalue = 24 * sWorld->getRate(RATE_POWER_FOCUS);
+            addvalue = 24 * sWorld->GetRate(RATE_POWER_FOCUS);
             break;
         }
         case POWER_ENERGY:
@@ -908,7 +908,7 @@ void Creature::Regenerate(Powers power)
             {
                 if (!IsUnderLastManaUseEffect())
                 {
-                    float ManaIncreaseRate = sWorld->getRate(RATE_POWER_MANA);
+                    float ManaIncreaseRate = sWorld->GetRate(RATE_POWER_MANA);
                     float Spirit = GetStat(STAT_SPIRIT);
 
                     addvalue = uint32((Spirit / 5.0f + 17.0f) * ManaIncreaseRate);
@@ -947,7 +947,7 @@ void Creature::RegenerateHealth()
     // Not only pet, but any controlled creature (and not polymorphed)
     if (GetCharmerOrOwnerGUID() && !IsPolymorphed())
     {
-        float HealthIncreaseRate = sWorld->getRate(RATE_HEALTH);
+        float HealthIncreaseRate = sWorld->GetRate(RATE_HEALTH);
         float Spirit = GetStat(STAT_SPIRIT);
 
         if (GetPower(POWER_MANA) > 0)
@@ -1525,17 +1525,17 @@ float Creature::GetHealthMod(int32 Rank)
     switch (Rank)                                           // define rates for each elite rank
     {
         case CREATURE_ELITE_NORMAL:
-            return sWorld->getRate(RATE_CREATURE_NORMAL_HP);
+            return sWorld->GetRate(RATE_CREATURE_NORMAL_HP);
         case CREATURE_ELITE_ELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_HP);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_HP);
         case CREATURE_ELITE_RAREELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RAREELITE_HP);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RAREELITE_HP);
         case CREATURE_ELITE_WORLDBOSS:
-            return sWorld->getRate(RATE_CREATURE_ELITE_WORLDBOSS_HP);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_WORLDBOSS_HP);
         case CREATURE_ELITE_RARE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RARE_HP);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RARE_HP);
         default:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_HP);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_HP);
     }
 }
 
@@ -1550,17 +1550,17 @@ float Creature::_GetDamageMod(int32 Rank)
     switch (Rank)                                           // define rates for each elite rank
     {
         case CREATURE_ELITE_NORMAL:
-            return sWorld->getRate(RATE_CREATURE_NORMAL_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_NORMAL_DAMAGE);
         case CREATURE_ELITE_ELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_DAMAGE);
         case CREATURE_ELITE_RAREELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RAREELITE_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RAREELITE_DAMAGE);
         case CREATURE_ELITE_WORLDBOSS:
-            return sWorld->getRate(RATE_CREATURE_ELITE_WORLDBOSS_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_WORLDBOSS_DAMAGE);
         case CREATURE_ELITE_RARE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RARE_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RARE_DAMAGE);
         default:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_DAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_DAMAGE);
     }
 }
 
@@ -1569,17 +1569,17 @@ float Creature::GetSpellDamageMod(int32 Rank) const
     switch (Rank)                                           // define rates for each elite rank
     {
         case CREATURE_ELITE_NORMAL:
-            return sWorld->getRate(RATE_CREATURE_NORMAL_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_NORMAL_SPELLDAMAGE);
         case CREATURE_ELITE_ELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_SPELLDAMAGE);
         case CREATURE_ELITE_RAREELITE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RAREELITE_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RAREELITE_SPELLDAMAGE);
         case CREATURE_ELITE_WORLDBOSS:
-            return sWorld->getRate(RATE_CREATURE_ELITE_WORLDBOSS_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_WORLDBOSS_SPELLDAMAGE);
         case CREATURE_ELITE_RARE:
-            return sWorld->getRate(RATE_CREATURE_ELITE_RARE_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_RARE_SPELLDAMAGE);
         default:
-            return sWorld->getRate(RATE_CREATURE_ELITE_ELITE_SPELLDAMAGE);
+            return sWorld->GetRate(RATE_CREATURE_ELITE_ELITE_SPELLDAMAGE);
     }
 }
 
@@ -1953,13 +1953,13 @@ bool Creature::CheckNoGrayAggroConfig(uint32 playerLevel, uint32 creatureLevel) 
 
 float Creature::GetAttackDistance(Unit const* player) const
 {
-    float aggroRate = sWorld->getRate(RATE_CREATURE_AGGRO);
+    float aggroRate = sWorld->GetRate(RATE_CREATURE_AGGRO);
     if (aggroRate == 0)
         return 0.0f;
 
     // WoW Wiki: the minimum radius seems to be 5 yards, while the maximum range is 45 yards
-    float maxRadius = (45.0f * sWorld->getRate(RATE_CREATURE_AGGRO));
-    float minRadius = (5.0f * sWorld->getRate(RATE_CREATURE_AGGRO));
+    float maxRadius = (45.0f * sWorld->GetRate(RATE_CREATURE_AGGRO));
+    float minRadius = (5.0f * sWorld->GetRate(RATE_CREATURE_AGGRO));
 
     uint8 expansionMaxLevel = uint8(GetMaxLevelForExpansion(GetCreatureTemplate()->expansion));
     int32 levelDifference = GetLevel() - player->GetLevel();
@@ -2771,7 +2771,7 @@ void Creature::AllLootRemovedFromCorpse()
         return;
 
     // Scripts can choose to ignore RATE_CORPSE_DECAY_LOOTED by calling SetCorpseDelay(timer, true)
-    float decayRate = m_ignoreCorpseDecayRatio ? 1.f : sWorld->getRate(RATE_CORPSE_DECAY_LOOTED);
+    float decayRate = m_ignoreCorpseDecayRatio ? 1.f : sWorld->GetRate(RATE_CORPSE_DECAY_LOOTED);
 
     // corpse skinnable, but without skinning flag, and then skinned, corpse will despawn next update
     if (loot.loot_type == LOOT_SKINNING)

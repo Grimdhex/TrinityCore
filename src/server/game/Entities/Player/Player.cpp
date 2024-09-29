@@ -734,8 +734,8 @@ uint32 Player::EnvironmentalDamage(EnviromentalDamage type, uint32 damage)
         if (type == DAMAGE_FALL)                               // DealDamage does not apply item durability loss from self-induced damage.
         {
             TC_LOG_DEBUG("entities.player", "Player::EnvironmentalDamage: Player '{}' ({}) fall to death, losing {} durability",
-                GetName(), GetGUID().ToString(), sWorld->getRate(RATE_DURABILITY_LOSS_ON_DEATH));
-            DurabilityLossAll(sWorld->getRate(RATE_DURABILITY_LOSS_ON_DEATH), false);
+                GetName(), GetGUID().ToString(), sWorld->GetRate(RATE_DURABILITY_LOSS_ON_DEATH));
+            DurabilityLossAll(sWorld->GetRate(RATE_DURABILITY_LOSS_ON_DEATH), false);
             // durability lost message
             SendDurabilityLoss();
         }
@@ -1139,7 +1139,7 @@ void Player::Update(uint32 diff)
             {
                 _restTime = currTime;
 
-                float bubble = 0.125f * sWorld->getRate(RATE_REST_INGAME);
+                float bubble = 0.125f * sWorld->GetRate(RATE_REST_INGAME);
                 float extraPerSec = ((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000.0f) * bubble;
 
                 // speed collect rest bonus (section/in hour)
@@ -2042,10 +2042,10 @@ void Player::RegenerateHealth()
     if (curValue >= maxValue)
         return;
 
-    float HealthIncreaseRate = sWorld->getRate(RATE_HEALTH);
+    float HealthIncreaseRate = sWorld->GetRate(RATE_HEALTH);
 
     if (GetLevel() < 15)
-        HealthIncreaseRate = sWorld->getRate(RATE_HEALTH) * (2.066f - (GetLevel() * 0.066f));
+        HealthIncreaseRate = sWorld->GetRate(RATE_HEALTH) * (2.066f - (GetLevel() * 0.066f));
 
     float addValue = 0.0f;
 
@@ -6289,7 +6289,7 @@ void Player::CheckAreaExplore()
                 uint32 XP;
                 if (diff < -5)
                 {
-                    XP = uint32(sObjectMgr->GetBaseXP(GetLevel()+5)*sWorld->getRate(RATE_XP_EXPLORE));
+                    XP = uint32(sObjectMgr->GetBaseXP(GetLevel()+5)*sWorld->GetRate(RATE_XP_EXPLORE));
                 }
                 else if (diff > 5)
                 {
@@ -6297,16 +6297,16 @@ void Player::CheckAreaExplore()
                     if (exploration_percent < 0)
                         exploration_percent = 0;
 
-                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*exploration_percent/100*sWorld->getRate(RATE_XP_EXPLORE));
+                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*exploration_percent/100*sWorld->GetRate(RATE_XP_EXPLORE));
                 }
                 else
                 {
-                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->getRate(RATE_XP_EXPLORE));
+                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->GetRate(RATE_XP_EXPLORE));
                 }
 
                 if (sWorld->getIntConfig(CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO))
                 {
-                    uint32 minScaledXP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->getRate(RATE_XP_EXPLORE)) * sWorld->getIntConfig(CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO) / 100;
+                    uint32 minScaledXP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->GetRate(RATE_XP_EXPLORE)) * sWorld->getIntConfig(CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO) / 100;
                     XP = std::max(minScaledXP, XP);
                 }
 
@@ -6372,14 +6372,14 @@ int32 Player::CalculateReputationGain(ReputationSource source, uint32 creatureOr
     switch (source)
     {
         case REPUTATION_SOURCE_KILL:
-            rate = sWorld->getRate(RATE_REPUTATION_LOWLEVEL_KILL);
+            rate = sWorld->GetRate(RATE_REPUTATION_LOWLEVEL_KILL);
             break;
         case REPUTATION_SOURCE_QUEST:
         case REPUTATION_SOURCE_DAILY_QUEST:
         case REPUTATION_SOURCE_WEEKLY_QUEST:
         case REPUTATION_SOURCE_MONTHLY_QUEST:
         case REPUTATION_SOURCE_REPEATABLE_QUEST:
-            rate = sWorld->getRate(RATE_REPUTATION_LOWLEVEL_QUEST);
+            rate = sWorld->GetRate(RATE_REPUTATION_LOWLEVEL_QUEST);
             break;
         case REPUTATION_SOURCE_SPELL:
         default:
@@ -6430,7 +6430,7 @@ int32 Player::CalculateReputationGain(ReputationSource source, uint32 creatureOr
     }
 
     if (source != REPUTATION_SOURCE_SPELL && GetsRecruitAFriendBonus(false))
-        percent *= 1.0f + sWorld->getRate(RATE_REPUTATION_RECRUIT_A_FRIEND_BONUS);
+        percent *= 1.0f + sWorld->GetRate(RATE_REPUTATION_RECRUIT_A_FRIEND_BONUS);
 
     return CalculatePct(rep, percent);
 }
@@ -6673,7 +6673,7 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
         AddPct(honor_f, GetMaxPositiveAuraModifier(SPELL_AURA_MOD_HONOR_GAIN_PCT));
     }
 
-    honor_f *= sWorld->getRate(RATE_HONOR);
+    honor_f *= sWorld->GetRate(RATE_HONOR);
     // Back to int now
     honor = int32(honor_f);
     // honor - for show honor points in log
@@ -8417,7 +8417,7 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
 
             // It may need a better formula
             // Now it works like this: lvl10: ~6copper, lvl70: ~9silver
-            bones->loot.gold = uint32(urand(50, 150) * 0.016f * std::pow(float(pLevel) / 5.76f, 2.5f) * sWorld->getRate(RATE_DROP_MONEY));
+            bones->loot.gold = uint32(urand(50, 150) * 0.016f * std::pow(float(pLevel) / 5.76f, 2.5f) * sWorld->GetRate(RATE_DROP_MONEY));
         }
 
         if (bones->lootRecipient != this)
@@ -8459,7 +8459,7 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
                     // Generate extra money for pick pocket loot
                     const uint32 a = urand(0, creature->GetLevel() / 2);
                     const uint32 b = urand(0, GetLevel() / 2);
-                    loot->gold = uint32(10 * (a + b) * sWorld->getRate(RATE_DROP_MONEY));
+                    loot->gold = uint32(10 * (a + b) * sWorld->GetRate(RATE_DROP_MONEY));
                     permission = OWNER_PERMISSION;
                 }
                 else
@@ -15020,7 +15020,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     bool rewarded = IsQuestRewarded(quest_id) && !quest->IsDFQuest();
 
     // Not give XP in case already completed once repeatable quest
-    uint32 XP = rewarded ? 0 : uint32(quest->GetXPReward(this)*sWorld->getRate(RATE_XP_QUEST));
+    uint32 XP = rewarded ? 0 : uint32(quest->GetXPReward(this)*sWorld->GetRate(RATE_XP_QUEST));
 
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
     XP *= GetTotalAuraMultiplier(SPELL_AURA_MOD_XP_QUEST_PCT);
@@ -17540,8 +17540,8 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
         //speed collect rest bonus in offline, in logout, in tavern, city (section/in hour)
         float bubble1 = 0.125f;
         float bubble = fields[28].GetUInt8() > 0
-            ? bubble1*sWorld->getRate(RATE_REST_OFFLINE_IN_TAVERN_OR_CITY)
-            : bubble0*sWorld->getRate(RATE_REST_OFFLINE_IN_WILDERNESS);
+            ? bubble1*sWorld->GetRate(RATE_REST_OFFLINE_IN_TAVERN_OR_CITY)
+            : bubble0*sWorld->GetRate(RATE_REST_OFFLINE_IN_WILDERNESS);
 
         SetRestBonus(GetRestBonus() + time_diff*((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000)*bubble);
     }
@@ -24744,7 +24744,7 @@ uint32 Player::CalculateTalentsPoints() const
     uint32 baseForLevel = GetLevel() < 10 ? 0 : GetLevel() - 9;
 
     if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
-        return uint32(baseForLevel * sWorld->getRate(RATE_TALENT));
+        return uint32(baseForLevel * sWorld->GetRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
     talentPointsForLevel += GetQuestRewardedTalentCount();
@@ -24752,7 +24752,7 @@ uint32 Player::CalculateTalentsPoints() const
     if (talentPointsForLevel > baseForLevel)
         talentPointsForLevel = baseForLevel;
 
-    return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
+    return uint32(talentPointsForLevel * sWorld->GetRate(RATE_TALENT));
 }
 
 bool Player::CanFlyInZone(uint32 mapid, uint32 zone, SpellInfo const* bySpell) const
@@ -24980,7 +24980,7 @@ void Player::HandleFall(MovementInfo const& movementInfo)
 
         if (damageperc > 0)
         {
-            uint32 damage = (uint32)(damageperc * GetMaxHealth()*sWorld->getRate(RATE_DAMAGE_FALL));
+            uint32 damage = (uint32)(damageperc * GetMaxHealth()*sWorld->GetRate(RATE_DAMAGE_FALL));
 
             if (GetCommandStatus(CHEAT_GOD))
                 damage = 0;

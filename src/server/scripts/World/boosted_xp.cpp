@@ -41,7 +41,7 @@ public:
     void OnGiveXP(Player* /*player*/, uint32& amount, Unit* /*unit*/) override
     {
         if (IsXPBoostActive())
-            amount *= sWorld->getRate(RATE_XP_BOOST);
+            amount *= sWorld->GetRate(RATE_XP_BOOST);
     }
 };
 

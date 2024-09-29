@@ -996,7 +996,7 @@ void Player::UpdatePowerRegen(Powers power)
     }
 
     if (powerRegenInfo[AsUnderlyingType(power)].second.has_value())
-        modifier *= sWorld->getRate(powerRegenInfo[AsUnderlyingType(power)].second.value()); // Config rate
+        modifier *= sWorld->GetRate(powerRegenInfo[AsUnderlyingType(power)].second.value()); // Config rate
 
     result_regen                *= modifier;
     result_regen_interrupted    *= modifier;

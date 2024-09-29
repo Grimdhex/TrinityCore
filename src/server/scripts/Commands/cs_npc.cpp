@@ -225,7 +225,7 @@ public:
 
     static bool HandleNpcSetAllowMovementCommand(ChatHandler* handler)
     {
-        if (sWorld->getAllowMovement())
+        if (sWorld->GetAllowMovement())
         {
             sWorld->SetAllowMovement(false);
             handler->SendSysMessage(LANG_CREATURE_MOVE_DISABLED);
