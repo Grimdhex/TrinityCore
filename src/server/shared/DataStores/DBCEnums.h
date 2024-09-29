@@ -499,42 +499,7 @@ enum TotemCategoryType
     TOTEM_CATEGORY_TYPE_SPANNER         = 24
 };
 
-/// @note: CMangos source
-enum VehicleFlags
-{
-    VEHICLE_FLAG_NO_STRAFE          = 0x00000001,   // NYI          // Sets MOVEFLAG2_NO_STRAFE
-    VEHICLE_FLAG_NO_JUMPING         = 0x00000002,   // NYI          // Sets MOVEFLAG2_NO_JUMPING
-    VEHICLE_FLAG_FULLSPEEDTURNING   = 0x00000004,   // NYI          // Sets MOVEFLAG2_FULLSPEEDTURNING
-    VEHICLE_FLAG_UNK1               = 0x00000008,                   // mostly found in flying vehicles
-    VEHICLE_FLAG_ALLOW_PITCHING     = 0x00000010,   // NYI          // Sets MOVEFLAG2_ALLOW_PITCHING
-    VEHICLE_FLAG_FULLSPEEDPITCHING  = 0x00000020,   // NYI          // Sets MOVEFLAG2_FULLSPEEDPITCHING
-    VEHICLE_FLAG_CUSTOM_PITCH       = 0x00000040,   // NYI          // If set use pitchMin and pitchMax from DBC, otherwise pitchMin = -pi/2, pitchMax = pi/2
-    VEHICLE_FLAG_UNK2               = 0x00000080,                   // only one entry - 27593
-    VEHICLE_FLAG_UNK3               = 0x00000100,                   // only one entry - 27593
-    VEHICLE_FLAG_UNK4               = 0x00000200,                   // mostly cannons and turrets
-    VEHICLE_FLAG_ADJUST_AIM_ANGLE   = 0x00000400,   // NYI          // Lua_IsVehicleAimAngleAdjustable
-    VEHICLE_FLAG_ADJUST_AIM_POWER   = 0x00000800,   // NYI          // Lua_IsVehicleAimPowerAdjustable
-    VEHICLE_FLAG_UNK5               = 0x00001000,
-    VEHICLE_FLAG_UNK6               = 0x00002000,
-    VEHICLE_FLAG_UNK7               = 0x00004000,
-    VEHICLE_FLAG_UNK8               = 0x00008000,
-    VEHICLE_FLAG_UNK9               = 0x00010000,
-    VEHICLE_FLAG_UNK10              = 0x00020000,
-    VEHICLE_FLAG_UNK11              = 0x00040000,
-    VEHICLE_FLAG_UNK12              = 0x00080000,
-    VEHICLE_FLAG_UNK13              = 0x00100000,
-    VEHICLE_FLAG_FIXED_POSITION     = 0x00200000,   //NYI           // Used for vehicles that have a fixed position, such as cannons
-    VEHICLE_FLAG_DISABLE_SWITCH     = 0x00400000,   // NYI          // Can't change seats, VEHICLE_ID = 335 chopper
-    VEHICLE_FLAG_UNK15              = 0x00800000,
-    VEHICLE_FLAG_UNK16              = 0x01000000,
-    VEHICLE_FLAG_UNK17              = 0x02000000,
-    VEHICLE_FLAG_UNK18              = 0x04000000,
-    VEHICLE_FLAG_UNK19              = 0x08000000,
-    VEHICLE_FLAG_NOT_DISMISSED      = 0x10000000,   // NYI          // Vehicle not dismissed after eject passenger?
-    VEHICLE_FLAG_UNK21              = 0x20000000,
-    VEHICLE_FLAG_UNK22              = 0x40000000,
-    VEHICLE_FLAG_UNK23              = 0x80000000,                   // only two entries: 36609 and 36619. Possible related to passenger stun
-};
+/// @note: "enum VehicleFlags" is in VevicleDefines.h
 
 enum VehicleSeatFlags
 {
