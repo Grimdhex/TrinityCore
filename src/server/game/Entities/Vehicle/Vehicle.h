@@ -22,6 +22,7 @@
 #include "Object.h"
 #include "UniqueTrackablePtr.h"
 #include "Unit.h"
+#include "Transport.h"
 #include "VehicleDefines.h"
 #include <list>
 
