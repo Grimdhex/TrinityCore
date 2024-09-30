@@ -68,6 +68,9 @@ void CombatAI::Reset()
 
 void CombatAI::JustDied(Unit* killer)
 {
+    if (!killer)
+        return;
+
     for (uint32 spell : _spells)
     {
         if (AISpellInfo[spell].condition == AICOND_DIE)
@@ -132,6 +135,9 @@ void CasterAI::InitializeAI()
 
 void CasterAI::JustEngagedWith(Unit* who)
 {
+    if (!who)
+        return;
+
     if (_spells.empty())
         return;
 
@@ -244,9 +250,13 @@ TurretAI::TurretAI(Creature* creature) : CreatureAI(creature)
 
 bool TurretAI::CanAIAttack(Unit const* who) const
 {
+    if (!who)
+        return false;
+
     /// @todo use one function to replace it
     if (!me->IsWithinCombatRange(who, me->m_CombatDistance) || (_minimumRange && me->IsWithinCombatRange(who, _minimumRange)))
         return false;
+
     return true;
 }
 

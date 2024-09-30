@@ -53,7 +53,8 @@ void PassiveAI::UpdateAI(uint32)
 
 void PossessedAI::AttackStart(Unit* target)
 {
-    me->Attack(target, true);
+    if (target)
+        me->Attack(target, true);
 }
 
 void PossessedAI::UpdateAI(uint32 /*diff*/)

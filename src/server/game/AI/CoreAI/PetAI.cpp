@@ -265,6 +265,9 @@ void PetAI::AttackStart(Unit* target)
 
 void PetAI::_AttackStart(Unit* target)
 {
+    if(!target)
+        return;
+
     // Check all pet states to decide if we can attack this target
     if (!CanAttack(target))
         return;
