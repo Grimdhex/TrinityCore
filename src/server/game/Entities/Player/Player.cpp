@@ -1294,9 +1294,7 @@ void Player::Update(uint32 diff)
             m_hostileReferenceCheckTimer -= diff;
     }
 
-    //we should execute delayed teleports only for alive(!) players
-    //because we don't want player's ghost teleported from graveyard
-    if (IsHasDelayedTeleport() && IsAlive())
+    if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
 }
 
