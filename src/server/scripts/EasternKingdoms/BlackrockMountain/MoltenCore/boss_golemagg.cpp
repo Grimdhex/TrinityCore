@@ -15,13 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss_Golemagg
-SD%Complete: 90
-SDComment: Timers need to be confirmed, Golemagg's Trust need to be checked
-SDCategory: Molten Core
-EndScriptData */
-
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "molten_core.h"
@@ -38,9 +31,9 @@ enum Spells
 {
     // Golemagg
     SPELL_MAGMASPLASH       = 13879,
-    SPELL_PYROBLAST         = 20228,
+    SPELL_DOUBLE_ATTACK     = 18943,
     SPELL_EARTHQUAKE        = 19798,
-    SPELL_ENRAGE            = 19953,
+    SPELL_PYROBLAST         = 20228,
     SPELL_GOLEMAGG_TRUST    = 20553,
 
     // Core Rager
@@ -50,67 +43,60 @@ enum Spells
 enum Events
 {
     EVENT_PYROBLAST     = 1,
-    EVENT_EARTHQUAKE    = 2,
+    EVENT_EARTHQUAKE    = 2
 };
 
 struct boss_golemagg : public BossAI
 {
-    boss_golemagg(Creature* creature) : BossAI(creature, BOSS_GOLEMAGG_THE_INCINERATOR) { }
+    boss_golemagg(Creature* creature) : BossAI(creature, BOSS_GOLEMAGG_THE_INCINERATOR), _isEnraged(false) { }
 
     void Reset() override
     {
         BossAI::Reset();
-        DoCast(me, SPELL_MAGMASPLASH, true);
+
+        _isEnraged = false;
+        DoCastSelf(SPELL_MAGMASPLASH);
+        DoCastSelf(SPELL_GOLEMAGG_TRUST);
+        DoCastSelf(SPELL_DOUBLE_ATTACK);
     }
 
     void JustEngagedWith(Unit* victim) override
     {
         BossAI::JustEngagedWith(victim);
+
         events.ScheduleEvent(EVENT_PYROBLAST, 7s);
     }
 
-    void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+    void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
     {
-        if (!HealthBelowPct(10) || me->HasAura(SPELL_ENRAGE))
-            return;
-
-        DoCast(me, SPELL_ENRAGE, true);
-        events.ScheduleEvent(EVENT_EARTHQUAKE, 3s);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+        if (!_isEnraged && me->HealthBelowPctDamaged(10, damage))
         {
-            switch (eventId)
-            {
-                case EVENT_PYROBLAST:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
-                        DoCast(target, SPELL_PYROBLAST);
-                    events.ScheduleEvent(EVENT_PYROBLAST, 7s);
-                    break;
-                case EVENT_EARTHQUAKE:
-                    DoCastVictim(SPELL_EARTHQUAKE);
-                    events.ScheduleEvent(EVENT_EARTHQUAKE, 3s);
-                    break;
-                default:
-                    break;
-            }
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
+            DoCastAOE(SPELL_EARTHQUAKE, true);
+            events.ScheduleEvent(EVENT_EARTHQUAKE, 5s);
+            _isEnraged = true;
         }
-
-        DoMeleeAttackIfReady();
     }
+
+    void ExecuteEvent(uint32 eventId) override
+    {
+        switch (eventId)
+        {
+            case EVENT_PYROBLAST:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
+                    DoCast(target, SPELL_PYROBLAST);
+                events.Repeat(7s);
+                break;
+            case EVENT_EARTHQUAKE:
+                DoCastSelf(SPELL_EARTHQUAKE);
+                events.Repeat(5s);
+                break;
+            default:
+                break;
+        }
+    }
+
+private:
+    bool _isEnraged;
 };
 
 struct npc_core_rager : public ScriptedAI
@@ -127,11 +113,16 @@ struct npc_core_rager : public ScriptedAI
 
     void JustEngagedWith(Unit* /*who*/) override
     {
-        _scheduler.Schedule(7s, [this](TaskContext task) // These times are probably wrong
+        _scheduler.Schedule(7s, [this](TaskContext task)
         {
             DoCastVictim(SPELL_MANGLE);
             task.Repeat(10s);
         });
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _scheduler.CancelAll();
     }
 
     void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
@@ -139,11 +130,10 @@ struct npc_core_rager : public ScriptedAI
         if (HealthAbovePct(50) || !_instance)
             return;
 
-        if (Creature* pGolemagg = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_GOLEMAGG_THE_INCINERATOR)))
+        if (Creature* golemagg = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_GOLEMAGG_THE_INCINERATOR)))
         {
-            if (pGolemagg->IsAlive())
+            if (golemagg->IsAlive())
             {
-                me->AddAura(SPELL_GOLEMAGG_TRUST, me);
                 Talk(EMOTE_LOWHP);
                 me->SetFullHealth();
             }
@@ -159,6 +149,17 @@ struct npc_core_rager : public ScriptedAI
         {
             DoMeleeAttackIfReady();
         });
+
+        if (Creature* golemagg = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_GOLEMAGG_THE_INCINERATOR)))
+        {
+            if (golemagg->IsAlive())
+            {
+                if (me->GetDistance(golemagg) > 100.f)
+                    ScriptedAI::EnterEvadeMode();
+            }
+            else
+                me->KillSelf();
+        }
     }
 
 private:
