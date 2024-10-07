@@ -15,13 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss_Garr
-SD%Complete: 50
-SDComment: Adds NYI
-SDCategory: Molten Core
-EndScriptData */
-
 #include "ScriptMgr.h"
 #include "molten_core.h"
 #include "ObjectMgr.h"
@@ -30,20 +23,21 @@ EndScriptData */
 enum Spells
 {
     // Garr
-    SPELL_ANTIMAGIC_PULSE    = 19492,
-    SPELL_MAGMA_SHACKLES     = 19496,
-    SPELL_ENRAGE             = 19516,
-    SPELL_SEPARATION_ANXIETY = 23492,
+    SPELL_ANTIMAGIC_PULSE       = 19492,
+    SPELL_MAGMA_SHACKLES        = 19496,
+    SPELL_FRENZY                = 19516,
 
     // Adds
-    SPELL_ERUPTION          = 19497,
-    SPELL_IMMOLATE          = 15732,
+    SPELL_ERUPTION              = 19497,
+    SPELL_IMMOLATE              = 15732,
+    SPELL_SEPARATION_ANXIETY    = 23492
 };
 
 enum Events
 {
     EVENT_ANTIMAGIC_PULSE    = 1,
     EVENT_MAGMA_SHACKLES     = 2,
+    EVENT_FRENZY             = 3
 };
 
 struct boss_garr : public BossAI
@@ -53,41 +47,30 @@ struct boss_garr : public BossAI
     void JustEngagedWith(Unit* victim) override
     {
         BossAI::JustEngagedWith(victim);
-        events.ScheduleEvent(EVENT_ANTIMAGIC_PULSE, 25s);
-        events.ScheduleEvent(EVENT_MAGMA_SHACKLES, 15s);
+
+        events.ScheduleEvent(EVENT_ANTIMAGIC_PULSE, 15s);
+        events.ScheduleEvent(EVENT_MAGMA_SHACKLES, 10s);
+        events.ScheduleEvent(EVENT_FRENZY, 10min);
     }
 
-    void UpdateAI(uint32 diff) override
+    void ExecuteEvent(uint32 eventId) override
     {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+        switch (eventId)
         {
-            switch (eventId)
-            {
             case EVENT_ANTIMAGIC_PULSE:
-                DoCast(me, SPELL_ANTIMAGIC_PULSE);
-                events.ScheduleEvent(EVENT_ANTIMAGIC_PULSE, 10s, 15s);
+                DoCastSelf(SPELL_ANTIMAGIC_PULSE);
+                events.Repeat(20s);
                 break;
             case EVENT_MAGMA_SHACKLES:
-                DoCast(me, SPELL_MAGMA_SHACKLES);
-                events.ScheduleEvent(EVENT_MAGMA_SHACKLES, 8s, 12s);
+                DoCastSelf(SPELL_MAGMA_SHACKLES);
+                events.Repeat(15s);
+                break;
+            case EVENT_FRENZY:
+                DoCastSelf(SPELL_FRENZY);
                 break;
             default:
                 break;
-            }
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
         }
-
-        DoMeleeAttackIfReady();
     }
 };
 
@@ -131,11 +114,8 @@ struct npc_firesworn : public ScriptedAI
 
     void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
     {
-        uint32 const health10pct = me->CountPctFromMaxHealth(10);
-        uint32 health = me->GetHealth();
-        if (int32(health) - int32(damage) < int32(health10pct))
+        if (me->HealthBelowPctDamaged(10, damage))
         {
-            damage = 0;
             DoCastVictim(SPELL_ERUPTION);
             me->DespawnOrUnsummon();
         }
