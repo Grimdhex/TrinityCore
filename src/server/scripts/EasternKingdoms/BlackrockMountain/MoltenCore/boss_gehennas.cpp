@@ -15,12 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss_Gehennas
-SD%Complete: 90
-SDComment: Adds MC NYI
-SDCategory: Molten Core
-EndScriptData */
+ /// @todo: Mangos use two shaodw bolt spell: random - 19728 and tank - 19729. Need to research if it's correct.
 
 #include "ScriptMgr.h"
 #include "molten_core.h"
@@ -43,55 +38,38 @@ enum Events
 
 struct boss_gehennas : public BossAI
 {
-    boss_gehennas(Creature* creature) : BossAI(creature, BOSS_GEHENNAS)
-    {
-    }
+    boss_gehennas(Creature* creature) : BossAI(creature, BOSS_GEHENNAS) { }
 
     void JustEngagedWith(Unit* victim) override
     {
         BossAI::JustEngagedWith(victim);
-        events.ScheduleEvent(EVENT_GEHENNAS_CURSE, 12s);
-        events.ScheduleEvent(EVENT_RAIN_OF_FIRE, 10s);
-        events.ScheduleEvent(EVENT_SHADOW_BOLT, 6s);
+
+        events.ScheduleEvent(EVENT_GEHENNAS_CURSE, 6s, 10s);
+        events.ScheduleEvent(EVENT_RAIN_OF_FIRE, 8s, 10s);
+        events.ScheduleEvent(EVENT_SHADOW_BOLT, 3s, 6s);
     }
 
-    void UpdateAI(uint32 diff) override
+    void ExecuteEvent(uint32 eventId) override
     {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+        switch (eventId)
         {
-            switch (eventId)
-            {
-                case EVENT_GEHENNAS_CURSE:
-                    DoCastVictim(SPELL_GEHENNAS_CURSE);
-                    events.ScheduleEvent(EVENT_GEHENNAS_CURSE, 22s, 30s);
-                    break;
-                case EVENT_RAIN_OF_FIRE:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
-                        DoCast(target, SPELL_RAIN_OF_FIRE);
-                    events.ScheduleEvent(EVENT_RAIN_OF_FIRE, 4s, 12s);
-                    break;
-                case EVENT_SHADOW_BOLT:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1))
-                        DoCast(target, SPELL_SHADOW_BOLT);
-                    events.ScheduleEvent(EVENT_SHADOW_BOLT, 7s);
-                    break;
-                default:
-                    break;
-            }
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
+            case EVENT_GEHENNAS_CURSE:
+                DoCastVictim(SPELL_GEHENNAS_CURSE);
+                events.Repeat(30s, 30s);
+                break;
+            case EVENT_RAIN_OF_FIRE:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
+                    DoCast(target, SPELL_RAIN_OF_FIRE);
+                events.Repeat(4s, 12s);
+                break;
+            case EVENT_SHADOW_BOLT:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1))
+                    DoCast(target, SPELL_SHADOW_BOLT);
+                events.Repeat(3s, 6s);
+                break;
+            default:
+                break;
         }
-
-        DoMeleeAttackIfReady();
     }
 };
 
