@@ -15,13 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss_Baron_Geddon
-SD%Complete: 100
-SDComment:
-SDCategory: Molten Core
-EndScriptData */
-
 #include "ScriptMgr.h"
 #include "molten_core.h"
 #include "ScriptedCreature.h"
@@ -41,6 +34,8 @@ enum Spells
     SPELL_IGNITE_MANA   = 19659,
     SPELL_LIVING_BOMB   = 20475,
     SPELL_ARMAGEDDON    = 20478,
+
+    AURA_ARMAGEDDON     = 20479,
 };
 
 enum Events
@@ -52,64 +47,48 @@ enum Events
 
 struct boss_baron_geddon : public BossAI
 {
-    boss_baron_geddon(Creature* creature) : BossAI(creature, BOSS_BARON_GEDDON)
-    {
-    }
+    boss_baron_geddon(Creature* creature) : BossAI(creature, BOSS_BARON_GEDDON) { }
 
     void JustEngagedWith(Unit* victim) override
     {
         BossAI::JustEngagedWith(victim);
-        events.ScheduleEvent(EVENT_INFERNO, 45s);
-        events.ScheduleEvent(EVENT_IGNITE_MANA, 30s);
-        events.ScheduleEvent(EVENT_LIVING_BOMB, 35s);
+
+        events.ScheduleEvent(EVENT_INFERNO, 15s);
+        events.ScheduleEvent(EVENT_IGNITE_MANA, 9s);
+        events.ScheduleEvent(EVENT_LIVING_BOMB, 15s);
     }
 
-    void UpdateAI(uint32 diff) override
+    void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
     {
-        if (!UpdateVictim())
+        if (!HealthBelowPct(2) || me->HasAura(AURA_ARMAGEDDON))
             return;
 
-        events.Update(diff);
+        me->InterruptNonMeleeSpells(true);
+        DoCastSelf(SPELL_ARMAGEDDON);
+        Talk(EMOTE_SERVICE);
+    }
 
-        // If we are <2% hp cast Armageddon
-        if (!HealthAbovePct(2))
+    void ExecuteEvent(uint32 eventId) override
+    {
+        switch (eventId)
         {
-            me->InterruptNonMeleeSpells(true);
-            DoCast(me, SPELL_ARMAGEDDON);
-            Talk(EMOTE_SERVICE);
-            return;
+            case EVENT_INFERNO:
+                DoCastAOE(SPELL_INFERNO);
+                events.Repeat(20s, 30s);
+                break;
+            case EVENT_IGNITE_MANA:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0.0f, true, true, -SPELL_IGNITE_MANA))
+                    DoCast(target, SPELL_IGNITE_MANA);
+                events.Repeat(30s);
+                break;
+            case EVENT_LIVING_BOMB:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0.0f, true))
+                    DoCast(target, SPELL_LIVING_BOMB);
+                events.Repeat(15s);
+                break;
+            default:
+                break;
         }
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-                case EVENT_INFERNO:
-                    DoCast(me, SPELL_INFERNO);
-                    events.ScheduleEvent(EVENT_INFERNO, 45s);
-                    break;
-                case EVENT_IGNITE_MANA:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0.0f, true, true, -SPELL_IGNITE_MANA))
-                        DoCast(target, SPELL_IGNITE_MANA);
-                    events.ScheduleEvent(EVENT_IGNITE_MANA, 30s);
-                    break;
-                case EVENT_LIVING_BOMB:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0.0f, true))
-                        DoCast(target, SPELL_LIVING_BOMB);
-                    events.ScheduleEvent(EVENT_LIVING_BOMB, 35s);
-                    break;
-                default:
-                    break;
-            }
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-        }
-
-        DoMeleeAttackIfReady();
     }
 };
 
@@ -118,14 +97,21 @@ class spell_baron_geddon_inferno : public AuraScript
 {
     PrepareAuraScript(spell_baron_geddon_inferno);
 
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_INFERNO_DMG });
+    }
+
     void OnPeriodic(AuraEffect const* aurEff)
     {
         PreventDefaultAction();
-        static const int32 damageForTick[8] = { 500, 500, 1000, 1000, 2000, 2000, 3000, 5000 };
+
+        static const int32 damageForTick[8] = { 500, 500, 500, 1000, 1000, 2000, 3000, 5000 };
         CastSpellExtraArgs args;
         args.TriggerFlags = TRIGGERED_FULL_MASK;
         args.TriggeringAura = aurEff;
         args.AddSpellMod(SPELLVALUE_BASE_POINT0, damageForTick[aurEff->GetTickNumber() - 1]);
+
         GetTarget()->CastSpell(nullptr, SPELL_INFERNO_DMG, args);
     }
 
