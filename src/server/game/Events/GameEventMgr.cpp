@@ -1268,13 +1268,13 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
             sObjectMgr->AddCreatureToGrid(*itr, data);
 
             // Spawn if necessary (loaded grids only)
-            Map* map = sMapMgr->CreateBaseMap(data->mapId);
-            map->RemoveRespawnTime(SPAWN_TYPE_CREATURE, *itr);
-            // We use spawn coords to spawn
-            if (!map->Instanceable() && map->IsGridLoaded(data->spawnPoint))
+            sMapMgr->DoForAllMapsWithMapId(data->mapId, [&itr, data](Map* map)
             {
-                Creature::CreateCreatureFromDB(*itr, map);
-            }
+                map->RemoveRespawnTime(SPAWN_TYPE_CREATURE, *itr);
+                // We use spawn coords to spawn
+                if (map->IsGridLoaded(data->spawnPoint))
+                    Creature::CreateCreatureFromDB(*itr, map);
+            });
         }
     }
 
@@ -1293,21 +1293,23 @@ void GameEventMgr::GameEventSpawn(int16 event_id)
             sObjectMgr->AddGameobjectToGrid(*itr, data);
             // Spawn if necessary (loaded grids only)
             // this base map checked as non-instanced and then only existed
-            Map* map = sMapMgr->CreateBaseMap(data->mapId);
-            map->RemoveRespawnTime(SPAWN_TYPE_GAMEOBJECT, *itr);
-            // We use current coords to unspawn, not spawn coords since creature can have changed grid
-            if (!map->Instanceable() && map->IsGridLoaded(data->spawnPoint))
+            sMapMgr->DoForAllMapsWithMapId(data->mapId, [&itr, data](Map* map)
             {
-                if (GameObject* go = GameObject::CreateGameObjectFromDB(*itr, map, false))
+                map->RemoveRespawnTime(SPAWN_TYPE_GAMEOBJECT, *itr);
+                // We use current coords to unspawn, not spawn coords since creature can have changed grid
+                if (map->IsGridLoaded(data->spawnPoint))
                 {
-                    /// @todo find out when it is add to map
-                    if (go->isSpawnedByDefault())
+                    if (GameObject* go = GameObject::CreateGameObjectFromDB(*itr, map, false))
                     {
-                        if (!map->AddToMap(go))
-                            delete go;
+                        /// @todo find out when it is add to map
+                        if (go->isSpawnedByDefault())
+                        {
+                            if (!map->AddToMap(go))
+                                delete go;
+                        }
                     }
                 }
-            }
+            });
         }
     }
 
