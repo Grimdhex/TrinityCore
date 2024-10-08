@@ -416,7 +416,7 @@ bool GameObject::Create(uint32 entry, Map* map, uint32 phaseMask, Position const
 
     LastUsedScriptID = GetGOInfo()->ScriptId;
 
-    m_stringIds[AsUnderlyingType(StringIdType::Template)] = &goinfo->StringId;
+    m_stringIds[AsUnderlyingType(StringIdType::Template)] = &goInfo->StringId;
 
     AIM_Initialize();
 
