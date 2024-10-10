@@ -56,7 +56,6 @@ struct boss_golemagg : public BossAI
 
         _isEnraged = false;
         DoCastSelf(SPELL_MAGMASPLASH);
-        DoCastSelf(SPELL_GOLEMAGG_TRUST);
         DoCastSelf(SPELL_DOUBLE_ATTACK);
     }
 
@@ -156,6 +155,9 @@ struct npc_core_rager : public ScriptedAI
             {
                 if (me->GetDistance(golemagg) > 100.f)
                     ScriptedAI::EnterEvadeMode();
+
+                if (me->GetDistance(golemagg) < 45.f)
+                    golemagg->CastSpell(me, SPELL_GOLEMAGG_TRUST, true);
             }
             else
                 me->KillSelf();
