@@ -15,13 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss_Majordomo_Executus
-SD%Complete: 30
-SDComment: Correct spawning and Event NYI
-SDCategory: Molten Core
-EndScriptData */
-
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "Map.h"
@@ -73,9 +66,7 @@ enum Events
 
 struct boss_majordomo : public BossAI
 {
-    boss_majordomo(Creature* creature) : BossAI(creature, BOSS_MAJORDOMO_EXECUTUS)
-    {
-    }
+    boss_majordomo(Creature* creature) : BossAI(creature, BOSS_MAJORDOMO_EXECUTUS) { }
 
     void KilledUnit(Unit* /*victim*/) override
     {
@@ -86,6 +77,7 @@ struct boss_majordomo : public BossAI
     void JustEngagedWith(Unit* who) override
     {
         BossAI::JustEngagedWith(who);
+
         Talk(SAY_AGGRO);
         events.ScheduleEvent(EVENT_MAGIC_REFLECTION, 30s);
         events.ScheduleEvent(EVENT_DAMAGE_REFLECTION, 15s);
@@ -124,11 +116,11 @@ struct boss_majordomo : public BossAI
                 switch (eventId)
                 {
                     case EVENT_MAGIC_REFLECTION:
-                        DoCast(me, SPELL_MAGIC_REFLECTION);
+                        DoCastSelf(SPELL_MAGIC_REFLECTION);
                         events.ScheduleEvent(EVENT_MAGIC_REFLECTION, 30s);
                         break;
                     case EVENT_DAMAGE_REFLECTION:
-                        DoCast(me, SPELL_DAMAGE_REFLECTION);
+                        DoCastSelf(SPELL_DAMAGE_REFLECTION);
                         events.ScheduleEvent(EVENT_DAMAGE_REFLECTION, 30s);
                         break;
                     case EVENT_BLAST_WAVE:
